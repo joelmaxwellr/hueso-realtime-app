@@ -1,0 +1,32 @@
+.EnEspera{
+    background-color: #F49600;
+    color: white;
+}
+
+.Aprobado{
+    background-color: #8E0099;
+    color: white;
+}
+
+
+.Imprimiendo{
+    background-color: #33D9FF;
+    color: white;
+}
+
+.Cancelado{
+    background-color: #BC0000;
+    color: white;
+}
+.Detenido{
+    background-color: #550303;
+    color: white;
+}
+.Listo{
+    background-color: #F7D900;
+    color: white;
+}
+.Entregado{
+    background-color: #569900;
+    color: white;
+}

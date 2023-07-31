@@ -24,7 +24,7 @@ export default function Auth(props) {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
-        console.log(user);
+        console.log(user.email);
         setLogStatus(user);
       })
       .catch((error) => {
