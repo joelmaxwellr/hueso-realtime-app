@@ -84,6 +84,10 @@ export default function Crud() {
             const data = snapshot.val();
             if (data) {
                 const newArray = Object.keys(data).map((key) => ({ ...data[key], id: key }));
+    
+                // Ordenar el array por la propiedad "valor" de forma ascendente
+                newArray.sort((a, b) => b.fechaOrden - a.fechaOrden);
+    
                 setData(newArray);
             } else {
                 setData([]);
@@ -93,7 +97,7 @@ export default function Crud() {
 
     const filtroData = (data, busqueda) => {
         const resultado = data.filter(Element => Element.material == busqueda )
-        console.log(resultado)
+        /* console.log(resultado) */
     }
 filtroData(data,"UV")
 
