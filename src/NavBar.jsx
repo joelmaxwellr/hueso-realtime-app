@@ -3,7 +3,7 @@ const Navbar = () => {
         <div>
             <ul className="nav nav-tabs">
                 <li className="nav-item">
-                    <a className="nav-link active" aria-current="page" href="#">Active</a>
+                    <a className="nav-link active" aria-current="page" href="#">Ordenes Principal</a>
                 </li>
                 <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dropdown</a>

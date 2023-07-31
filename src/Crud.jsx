@@ -91,6 +91,13 @@ export default function Crud() {
         });
     };
 
+    const filtroData = (data, busqueda) => {
+        const resultado = data.filter(Element => Element.material == busqueda )
+        console.log(resultado)
+    }
+filtroData(data,"UV")
+
+
     useEffect(() => {
         fetchData();
         setUsuarioActual(auth.currentUser.email)
@@ -156,7 +163,7 @@ export default function Crud() {
         var str = numb.toString().split(".");
         str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return str.join(".");
-      }
+    }
     return (
         <div>
             <h3>
@@ -165,37 +172,37 @@ export default function Crud() {
             <Navbar />
             <div className='input-group mb-3'>
 
-            
-            <input className='form-control' type="text" id='nombreCliente' placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
-            
 
-            <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
-            <select className='form-control' name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
-                <option value="DTF">DTF</option>
-                <option value="UV">UV</option>
-                <option value="Sublimación">Sublimación</option>
-                <option value="Impresión Directa">Impresion Directa</option>
-            </select>
-            <select  name="estadoImpresion"
-                className={estadoImpresion.className}
-                id="estadoImpresion"
-                value={estadoImpresion.value}
-                onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
-                <option value="En Espera" className={style.EnEspera}>En Espera</option>
-                <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
-                <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
-                <option value="Detenido" className={style.Detenido}>Detenido</option>
-                <option value="Imprimiendo" className={style.Imprimiendo}>Imprimiendo</option>
-                <option value="Listo" className={style.Listo}>Listo</option>
-                <option value="Entregado" className={style.Entregado}>Entregado</option>
-            </select>
-            <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
+                <input className='form-control' type="text" id='nombreCliente' placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
+
+
+                <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
+                <select className='form-control' name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
+                    <option value="DTF">DTF</option>
+                    <option value="UV">UV</option>
+                    <option value="Sublimación">Sublimación</option>
+                    <option value="Impresión Directa">Impresion Directa</option>
+                </select>
+                <select name="estadoImpresion"
+                    className={estadoImpresion.className}
+                    id="estadoImpresion"
+                    value={estadoImpresion.value}
+                    onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
+                    <option value="En Espera" className={style.EnEspera}>En Espera</option>
+                    <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
+                    <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
+                    <option value="Detenido" className={style.Detenido}>Detenido</option>
+                    <option value="Imprimiendo" className={style.Imprimiendo}>Imprimiendo</option>
+                    <option value="Listo" className={style.Listo}>Listo</option>
+                    <option value="Entregado" className={style.Entregado}>Entregado</option>
+                </select>
+                <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
             </div>
             <div className=''>
-               
-            {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear</button>  </div> 
-            : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización</button> 
-            <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
+
+                {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear</button>  </div>
+                    : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización</button>
+                        <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
             </div>
             <div>
                 <table className="table">
@@ -217,9 +224,9 @@ export default function Crud() {
                         {
                             data.length == 0 ? (
                                 <tr>
-                                  <td colSpan="10">No hay ordenes de trabajo</td>
+                                    <td colSpan="10">No hay ordenes de trabajo</td>
                                 </tr>
-                              )  : data.map(item => (
+                            ) : data.map(item => (
                                 <tr key={item.id}>
 
                                     <th scope="row">{item.orden}</th>
