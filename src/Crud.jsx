@@ -4,6 +4,7 @@ import PrintButton from './PrintButton';
 import { getDatabase, ref, push, onValue, remove } from "firebase/database";
 import style from "./Crud.module.css"
 import { getAuth } from "firebase/auth";
+import Navbar from './NavBar';
 
 
 
@@ -156,18 +157,21 @@ export default function Crud() {
             <h3>
                 {usuarioActual}
             </h3>
-            <input type="text" id='nombreCliente' placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
-            {/*  <input type="text" id='material' placeholder='material' value={material} onChange={(e) => setMaterial(e.target.value)} /> */}
-            <select name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
+            <Navbar />
+            <div className='input-group mb-3'>
+
+            
+            <input className='form-control' type="text" id='nombreCliente' placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
+            
+
+            <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
+            <select className='form-control' name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
                 <option value="DTF">DTF</option>
                 <option value="UV">UV</option>
                 <option value="Sublimación">Sublimación</option>
                 <option value="Impresión Directa">Impresion Directa</option>
             </select>
-
-            <input type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
-            <input type="text" id='descripcion' placeholder='Descripción' value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-            <select name="estadoImpresion"
+            <select  name="estadoImpresion"
                 className={estadoImpresion.className}
                 id="estadoImpresion"
                 value={estadoImpresion.value}
@@ -180,7 +184,14 @@ export default function Crud() {
                 <option value="Listo" className={style.Listo}>Listo</option>
                 <option value="Entregado" className={style.Entregado}>Entregado</option>
             </select>
-            {!actualizando ? <button onClick={crear}>Crear</button> : <div><button onClick={guardarActualizacion}>Guardar Actualización</button> <button onClick={cancelar}>Cancelar</button></div>}
+            <input className='form-control' type="text" id='descripcion' placeholder='Descripción' value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+            </div>
+            <div className=''>
+               
+            {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear</button>  </div> 
+            : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización</button> 
+            <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
+            </div>
             <div>
                 <table className="table">
                     <thead>
