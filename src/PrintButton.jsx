@@ -52,7 +52,7 @@ const PrintButton = ({ objeto, mostrarBoton }) => {
 
   return (
     <div>
-      <button onClick={() => {
+      <button className='btn btn-success' onClick={() => {
         handlePrint(objeto)
         handleImprimirClick(objeto)
 

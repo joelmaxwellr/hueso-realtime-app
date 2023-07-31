@@ -13,7 +13,7 @@ export default function Crud() {
     const [usuarioActual, setUsuarioActual] = useState("")
     const [nombreCliente, setNombreCliente] = useState("")
     const [material, setMaterial] = useState("DTF")
-    const [descripcion, setDescripcion] = useState("")
+    const [nota, setnota] = useState("")
     const [precio, setPrecio] = useState(0)
     const [data, setData] = useState([])
     const [fecha, setFecha] = useState("")
@@ -38,7 +38,7 @@ export default function Crud() {
         setNombreCliente("");
         setMaterial("");
         setPrecio(0);
-        setDescripcion("");
+        setnota("");
         setMaterial("DTF")
         setEstadoImpresion({ value: "En Espera", className: style["EnEspera"] })
     }
@@ -57,7 +57,7 @@ export default function Crud() {
             await push(ref(db, "ordenes"), {
                 nombreCliente: nombreCliente,
                 material: material,
-                descripcion: descripcion,
+                nota: nota,
                 precio: precio,
                 fecha: fechaFormateada,
                 fechaOrden: fechaOrdens,
@@ -109,7 +109,7 @@ export default function Crud() {
         setNombreCliente(item.nombreCliente);
         setMaterial(item.material);
         setPrecio(item.precio);
-        setDescripcion(item.descripcion);
+        setnota(item.nota);
         setEstadoImpresion({ value: item.estadoImpresion.value, className: item.estadoImpresion.className })
         setActualizando(true);
         setClienteActualizando(item);
@@ -125,7 +125,7 @@ export default function Crud() {
             await set(dbRef, {
                 nombreCliente: nombreCliente,
                 material: material,
-                descripcion: descripcion,
+                nota: nota,
                 precio: precio,
                 fecha: fecha,
                 fechaOrden: fechaOrden,
@@ -152,6 +152,11 @@ export default function Crud() {
         setMostrarBoton(false)
     }
 
+    function separator(numb) {
+        var str = numb.toString().split(".");
+        str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return str.join(".");
+      }
     return (
         <div>
             <h3>
@@ -176,7 +181,7 @@ export default function Crud() {
                 id="estadoImpresion"
                 value={estadoImpresion.value}
                 onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
-                <option value="EnEspera" className={style.EnEspera}>En Espera</option>
+                <option value="En Espera" className={style.EnEspera}>En Espera</option>
                 <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
                 <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
                 <option value="Detenido" className={style.Detenido}>Detenido</option>
@@ -184,7 +189,7 @@ export default function Crud() {
                 <option value="Listo" className={style.Listo}>Listo</option>
                 <option value="Entregado" className={style.Entregado}>Entregado</option>
             </select>
-            <input className='form-control' type="text" id='descripcion' placeholder='Descripción' value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+            <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
             </div>
             <div className=''>
                
@@ -200,7 +205,7 @@ export default function Crud() {
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
-                            <th scope="col">Descripción</th>
+                            <th scope="col">Nota</th>
                             <th scope="col">Estatus</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Hora</th>
@@ -218,10 +223,10 @@ export default function Crud() {
                                 <tr key={item.id}>
 
                                     <th scope="row">{item.orden}</th>
-                                    <td>{item.nombreCliente}</td>
-                                    <td>{item.precio}</td>
+                                    <td className='text-capitalize'>{item.nombreCliente}</td>
+                                    <td>{separator(item.precio)}</td>
                                     <td>{item.material}</td>
-                                    <td>{item.descripcion}</td>
+                                    <td>{item.nota}</td>
                                     <td className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
                                     <td>{item.fecha}</td>
                                     <td>{item.hora}</td>
@@ -229,8 +234,8 @@ export default function Crud() {
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} /> </td>
-                                    <td><button onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
-                                    <td><button onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
+                                    <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
+                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
                                     {/* <td>{item.estatus}</td> */}
                                 </tr>
