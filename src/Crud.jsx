@@ -210,7 +210,11 @@ export default function Crud() {
                     <tbody>
 
                         {
-                            data.length == 0 ? "No hay ordenes de trabajo" : data.map(item => (
+                            data.length == 0 ? (
+                                <tr>
+                                  <td colSpan="10">No hay ordenes de trabajo</td>
+                                </tr>
+                              )  : data.map(item => (
                                 <tr key={item.id}>
 
                                     <th scope="row">{item.orden}</th>

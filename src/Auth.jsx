@@ -44,8 +44,8 @@ export default function Auth(props) {
   return (
     <div className='container'>
       {!logStatus && (
-        <div className='d-flex align-self-center align-items-center '>
-          <form className='needs-validation'>
+        <div className=''>
+          
             <div className="mb-3">
               <label htmlFor="email">Correo electronico</label>
               <input className='form-control' type="email" id='email' onChange={(e) => setEmail(e.target.value)} />
@@ -55,13 +55,10 @@ export default function Auth(props) {
               <label htmlFor="password">Contraseña</label>
               <input className='form-control' type="password" id='password' onChange={(e) => setPassword(e.target.value)} />
             </div>
-            <div className="mb-3 form-check">
-              <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <button className='btn btn-success gap-2 ' onClick={signIn}>Iniciar Sesión</button>
-            <button className='btn btn-primary gap-2 ' onClick={create}>Crear cuenta</button>
-          </form>
+          
+            <button className='btn btn-success' onClick={signIn}>Iniciar Sesión</button>
+            <button className='btn btn-primary' onClick={create}>Crear cuenta</button>
+          
 {/* 
           <label htmlFor="email">Correo electronico</label>
           <input type="email" id='email' onChange={(e) => setEmail(e.target.value)} />
