@@ -42,7 +42,7 @@ export default function Auth(props) {
   };
 
   return (
-    <div>
+    <div className='container'>
       {!logStatus && (
         <div>
           
