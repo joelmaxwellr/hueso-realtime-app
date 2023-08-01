@@ -15,21 +15,24 @@ const PrintButton = ({ objeto, mostrarBoton }) => {
   }, [selectedCliente]);
 
   const handlePrint = (cliente) => {
-    const printContents = `
-<div class="resultados divs">
-
-    <img src="LOGOHUESO .png" width="75px" alt="" srcset=""> huesojeans<br>
-    <div>
-      <p id="dateAndTime">${cliente.hora} - ${cliente.fecha}</p>
-      <h5 id="tiempoImpresion"></h5>
-      <h5 id="tiempoEntrega"></h5>
-    </div>
-    <h2 id="cliente" className='text-capitalize'>${cliente.nombreCliente}</h2>
-    <h2 id="precio">${cliente.precio}</h2>•
-    <h1 id="precioDirecto"></h1>
-
-  </div>
-  `;
+    const usuario = `${cliente.usuarioActual}`
+    const codigoUsuario = usuario.slice(0,3)
+ 
+     const printContents = `
+ <div class="resultados divs">
+ 
+     <img src="LOGOHUESO .png" width="75px" alt="" srcset=""> huesoJeans - ${codigoUsuario}<br>
+     <div>
+       <p id="dateAndTime">${cliente.hora} - ${cliente.fecha}</p>
+       <h5 id="tiempoImpresion"></h5>
+       <h5 id="tiempoEntrega"></h5>
+     </div>
+     <h2 id="cliente" className='text-capitalize'>${cliente.nombreCliente} / ${cliente.material}</h2>
+     <h2 id="precio">RD$${cliente.precio}</h2>•
+     <h1 id="precioDirecto"></h1>
+ 
+   </div>
+   `;
 
     const printWindow = window.open('', '_blank', 'width=800,height=600');
 

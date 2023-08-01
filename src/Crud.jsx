@@ -142,9 +142,9 @@ export default function Crud() {
                 material: material,
                 nota: nota,
                 precio: precio,
-                fecha: fecha,
-                fechaOrden: fechaOrden,
-                hora: hora,
+                fecha: clienteActualizando.fecha,
+                fechaOrden: clienteActualizando.fechaOrden,
+                hora: clienteActualizando.hora,
                 estadoImpresion: estadoImpresion,
                 /* usuarioActual: usuarioActual */
             });
@@ -152,6 +152,7 @@ export default function Crud() {
         } catch (e) {
             console.error("Error updating document: ", e);
         }
+        console.log(clienteActualizando)
         setActualizando(false);
         limpiarCampos();
         fetchData();
