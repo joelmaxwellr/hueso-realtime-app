@@ -1,32 +1,39 @@
 .EnEspera{
-    background-color: #F49600;
-    color: white;
+    text-align: center;
+    background-color: #F49600 !important;
+    color: white !important;
 }
 
 .Aprobado{
-    background-color: #8E0099;
-    color: white;
+    text-align: center;
+    background-color: #8E0099 !important;
+    color: white !important;
 }
 
 
 .Imprimiendo{
-    background-color: #33D9FF;
-    color: white;
+    text-align: center;
+    background-color: #33D9FF !important;
+    color: white !important;
 }
 
 .Cancelado{
-    background-color: #BC0000;
-    color: white;
+    text-align: center;
+    background-color: #BC0000 !important;
+    color: white !important;
 }
 .Detenido{
-    background-color: #550303;
-    color: white;
+    text-align: center;
+    background-color: #550303 !important;
+    color: white !important;
 }
 .Listo{
-    background-color: #F7D900;
-    color: white;
+    text-align: center;
+    background-color: #F7D900 !important;
+    color: white !important;
 }
 .Entregado{
-    background-color: #569900;
-    color: white;
+    text-align: center;
+    background-color: #569900 !important;
+    color: white !important;
 }

@@ -6,7 +6,15 @@ import style from "./Crud.module.css"
 import { getAuth } from "firebase/auth";
 import Navbar from './NavBar';
 
-
+const styleBoot = {
+    EnEspera: 'bg-warning text-white',
+    Aprobado: 'bg-primary text-white',
+    Cancelado: 'bg-danger text-white',
+    Detenido: 'bg-warning-subtle ',
+    Imprimiendo: 'bg-info text-white',
+    Listo: 'bg-info bg-opacity-50 text-white',
+    Entregado: 'bg-success text-white'
+}
 
 
 export default function Crud() {
@@ -27,11 +35,7 @@ export default function Crud() {
 
     const auth = getAuth()
 
-    /* 
- */
 
-
-    /*     const db = getFirestore() */
     const db = getDatabase()
 
     const limpiarCampos = (e) => {
@@ -84,10 +88,10 @@ export default function Crud() {
             const data = snapshot.val();
             if (data) {
                 const newArray = Object.keys(data).map((key) => ({ ...data[key], id: key }));
-    
+
                 // Ordenar el array por la propiedad "valor" de forma ascendente
                 newArray.sort((a, b) => b.fechaOrden - a.fechaOrden);
-    
+
                 setData(newArray);
             } else {
                 setData([]);
@@ -96,10 +100,10 @@ export default function Crud() {
     };
 
     const filtroData = (data, busqueda) => {
-        const resultado = data.filter(Element => Element.material == busqueda )
+        const resultado = data.filter(Element => Element.material == busqueda)
         /* console.log(resultado) */
     }
-filtroData(data,"UV")
+    filtroData(data, "UV")
 
 
     useEffect(() => {
@@ -192,7 +196,7 @@ filtroData(data,"UV")
                     id="estadoImpresion"
                     value={estadoImpresion.value}
                     onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
-                    <option value="En Espera" className={style.EnEspera}>En Espera</option>
+                    <option value="EnEspera" className={style.EnEspera}>En Espera</option>
                     <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
                     <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
                     <option value="Detenido" className={style.Detenido}>Detenido</option>
@@ -236,16 +240,16 @@ filtroData(data,"UV")
                                     <th scope="row">{item.orden}</th>
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
                                     <td>{separator(item.precio)}</td>
-                                    <td>{item.material}</td>
+                                    <td >{item.material}</td>
                                     <td>{item.nota}</td>
-                                    <td className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
+                                    <td /* style= {{backgroundColor: style.Aprobado}}  */className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
                                     <td>{item.fecha}</td>
                                     <td>{item.hora}</td>
 
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} /> </td>
-                                    <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
+                                     <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
                                     {/* <td>{item.estatus}</td> */}
