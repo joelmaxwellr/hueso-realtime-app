@@ -32,6 +32,8 @@ export default function Crud() {
     const [actualizando, setActualizando] = useState(false)
     const [mostrarBoton, setMostrarBoton] = useState(false)
     const [clienteActualizando, setClienteActualizando] = useState(null);
+    const [navBarActive, setNavbarActive] = useState("principal")
+    const [filteredData, setFilteredData] = useState([]);
 
     const auth = getAuth()
 
@@ -93,23 +95,37 @@ export default function Crud() {
                 newArray.sort((a, b) => b.fechaOrden - a.fechaOrden);
 
                 setData(newArray);
+                setFilteredData(newArray); // Actualizar la data filtrada al obtener nuevos datos
             } else {
                 setData([]);
+                setFilteredData([]); // Si no hay datos, también limpiar la data filtrada
             }
         });
     };
 
-    const filtroData = (data, busqueda) => {
-        const resultado = data.filter(Element => Element.material == busqueda)
-        /* console.log(resultado) */
+    const filtroData = (busqueda) => {
+        if (busqueda === "principal") {
+            setFilteredData(data); // Mostrar todos los elementos sin filtrar
+        }
+        else if (busqueda === "Cancelado") {
+            const resultado = data.filter((Element) => Element.estadoImpresion.value===busqueda);
+    
+            setFilteredData(resultado);
+        }
+        else {
+            const resultado = data.filter((Element) => Element.material === busqueda);
+            setFilteredData(resultado);
+        }
     }
-    filtroData(data, "UV")
 
 
     useEffect(() => {
         fetchData();
+        if (navBarActive) {
+            filtroData(navBarActive); // Llamar al filtro después de obtener datos y si navBarActive es verdadero
+        }
         setUsuarioActual(auth.currentUser.email)
-    }, []);
+    }, [navBarActive]);
 
     const borrar = async (id) => {
         try {
@@ -173,12 +189,14 @@ export default function Crud() {
         str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return str.join(".");
     }
+
+
     return (
         <div>
             <h3>
                 {usuarioActual}
             </h3>
-            <Navbar />
+            <Navbar setNavbarActive={setNavbarActive} />
             <div className='input-group mb-3'>
 
 
@@ -235,7 +253,7 @@ export default function Crud() {
                                 <tr>
                                     <td colSpan="10">No hay ordenes de trabajo</td>
                                 </tr>
-                            ) : data.map(item => (
+                            ) : filteredData.map(item => (
                                 <tr key={item.id}>
 
                                     <th scope="row">{item.orden}</th>
@@ -243,14 +261,14 @@ export default function Crud() {
                                     <td>{separator(item.precio)}</td>
                                     <td >{item.material}</td>
                                     <td>{item.nota}</td>
-                                    <td /* style= {{backgroundColor: style.Aprobado}}  */className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
+                                    <td /* style= {{backgroundColor: style.Aprobado}}  */ className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
                                     <td>{item.fecha}</td>
                                     <td>{item.hora}</td>
 
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} /> </td>
-                                     <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
+                                    {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
                                     {/* <td>{item.estatus}</td> */}
