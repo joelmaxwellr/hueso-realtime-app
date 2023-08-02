@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 
 
-const PrintButton = ({ objeto, mostrarBoton }) => {
+const PrintButton = ({ objeto, mostrarBoton, separator}) => {
 
   const [selectedCliente, setSelectedCliente] = useState(null);
 
@@ -28,7 +28,7 @@ const PrintButton = ({ objeto, mostrarBoton }) => {
        <h5 id="tiempoEntrega"></h5>
      </div>
      <h2 id="cliente" className='text-capitalize'>${cliente.nombreCliente} / ${cliente.material}</h2>
-     <h2 id="precio">RD$${cliente.precio}</h2>•
+     <h2 id="precio">RD$ ${separator(cliente.precio)}</h2>•
      <h1 id="precioDirecto"></h1>
  
    </div>

@@ -42,7 +42,7 @@ export default function Auth(props) {
   };
 
   return (
-    <div className='container'>
+    <div className='container mx-auto m-5 p-5'  style={{'height':'50%'}}>
       {!logStatus && (
         <div className=''>
           
@@ -57,7 +57,7 @@ export default function Auth(props) {
             </div>
           
             <button className='btn btn-success' onClick={signIn}>Iniciar Sesión</button>
-            <button className='btn btn-primary' onClick={create}>Crear cuenta</button>
+           {/*  <button className='btn btn-primary' onClick={create}>Crear cuenta</button> */}
           
 {/* 
           <label htmlFor="email">Correo electronico</label>
@@ -70,7 +70,7 @@ export default function Auth(props) {
       )}
       {logStatus && (
         <div>
-          <button onClick={signingOut}>Cerrar Sesión</button>
+          <button className='btn btn-secondary' onClick={signingOut}>Cerrar Sesión</button>
           <Crud />
         </div>
       )}

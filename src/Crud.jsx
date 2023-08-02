@@ -34,6 +34,7 @@ export default function Crud() {
     const [clienteActualizando, setClienteActualizando] = useState(null);
     const [navBarActive, setNavbarActive] = useState("principal")
     const [filteredData, setFilteredData] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
 
     const auth = getAuth()
 
@@ -108,14 +109,27 @@ export default function Crud() {
             setFilteredData(data); // Mostrar todos los elementos sin filtrar
         }
         else if (busqueda === "Cancelado") {
-            const resultado = data.filter((Element) => Element.estadoImpresion.value===busqueda);
-    
+            const resultado = data.filter((Element) => Element.estadoImpresion.value === busqueda);
+
             setFilteredData(resultado);
         }
         else {
-            const resultado = data.filter((Element) => Element.material === busqueda);
+            const resultado = data.filter((Element) => Element.material == busqueda || Element.estadoImpresion.value == busqueda);
             setFilteredData(resultado);
         }
+    }
+
+
+    const filtrar = (terminoBusqueda) => {
+        var resultadosBusqueda = data.filter((elemento) => {
+            if (elemento.nombreCliente.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())
+                /* || elemento.company.name.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()) */
+            ) {
+                console.log(elemento)
+                return elemento;
+            }
+        });
+        setData(resultadosBusqueda);
     }
 
 
@@ -125,7 +139,7 @@ export default function Crud() {
             filtroData(navBarActive); // Llamar al filtro después de obtener datos y si navBarActive es verdadero
         }
         setUsuarioActual(auth.currentUser.email)
-    }, [navBarActive]);
+    }, [navBarActive, busqueda]);
 
     const borrar = async (id) => {
         try {
@@ -196,43 +210,54 @@ export default function Crud() {
             <h3>
                 {usuarioActual}
             </h3>
-            <Navbar setNavbarActive={setNavbarActive} />
-            <div className='input-group mb-3'>
+            <div className='container fixed-top navbar-expand-lg bg-white p-4'>
 
 
-                <input className='form-control' type="text" id='nombreCliente' placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
+
+                <div className='input-group mb-3 container-fluid'>
 
 
-                <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
-                <select className='form-control' name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
-                    <option value="DTF">DTF</option>
-                    <option value="UV">UV</option>
-                    <option value="Sublimación">Sublimación</option>
-                    <option value="Impresión Directa">Impresion Directa</option>
-                </select>
-                <select name="estadoImpresion"
-                    className={estadoImpresion.className}
-                    id="estadoImpresion"
-                    value={estadoImpresion.value}
-                    onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
-                    <option value="EnEspera" className={style.EnEspera}>En Espera</option>
-                    <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
-                    <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
-                    <option value="Detenido" className={style.Detenido}>Detenido</option>
-                    <option value="Imprimiendo" className={style.Imprimiendo}>Imprimiendo</option>
-                    <option value="Listo" className={style.Listo}>Listo</option>
-                    <option value="Entregado" className={style.Entregado}>Entregado</option>
-                </select>
-                <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
-            </div>
-            <div className=''>
+                    <input className='form-control' type="text" id='nombreCliente' placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
 
-                {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear</button>  </div>
-                    : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización</button>
-                        <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
+
+                    <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
+                    <select className='form-control' name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
+                        <option value="DTF">DTF</option>
+                        <option value="UV">UV</option>
+                        <option value="Sublimación">Sublimación</option>
+                        <option value="Impresión Directa">Impresion Directa</option>
+                    </select>
+                    <select name="estadoImpresion"
+                        className={estadoImpresion.className}
+                        id="estadoImpresion"
+                        value={estadoImpresion.value}
+                        onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
+                        <option value="EnEspera" className={style.EnEspera}>En Espera</option>
+                        <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
+                        <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
+                        <option value="Detenido" className={style.Detenido}>Detenido</option>
+                        <option value="Imprimiendo" className={style.Imprimiendo}>Imprimiendo</option>
+                        <option value="Listo" className={style.Listo}>Listo</option>
+                        <option value="Entregado" className={style.Entregado}>Entregado</option>
+                    </select>
+                    <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
+                    <input className='form-control' type="text" id='buscador' placeholder='Buscador' value={busqueda}
+                        onChange={(e) => {
+                            setBusqueda(e.target.value)
+                            filtrar(e.target.value)
+                        }} />
+                </div>
+                <div className=''>
+
+                    {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear</button>  </div>
+                        : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización</button>
+                            <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
+                </div>
+
+                <Navbar setNavbarActive={setNavbarActive} />
             </div>
             <div>
-                <table className="table">
+                <table className="table mx-auto">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -267,7 +292,7 @@ export default function Crud() {
 
 
 
-                                    <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} /> </td>
+                                    <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
                                     {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>  */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 

@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-const Navbar = ({setNavbarActive}) => {
-    
+const Navbar = ({ setNavbarActive }) => {
+
 
     return (
         <div>
-            <ul className="nav nav-tabs">
+            <ul className="nav nav-tabs p-1">
                 <li onClick={(e) => {
                     e.target.className = "nav-link  active"
                     setNavbarActive("principal")
@@ -33,15 +33,27 @@ const Navbar = ({setNavbarActive}) => {
                 </li>
                 <li onClick={(e) => {
                     e.target.className = "nav-link  active"
-                    setNavbarActive("Impresion Directa")
+                    setNavbarActive("Impresión Directa")
                 }} className="nav-item">
-                    <a className="nav-link " aria-disabled="true">Impresion Directa</a>
+                    <a className="nav-link " aria-disabled="true">Impresión Directa</a>
                 </li>
                 <li onClick={(e) => {
                     e.target.className = "nav-link  active"
-                    setNavbarActive("Cancelado")
+                    setNavbarActive("En Espera")
                 }} className="nav-item">
-                    <a className="nav-link " aria-disabled="true">Cancelado</a>
+                    <a className="nav-link " aria-disabled="true">En Espera</a>
+                </li>
+                <li onClick={(e) => {
+                    e.target.className = "nav-link  active"
+                    setNavbarActive("Aprobado")
+                }} className="nav-item">
+                    <a className="nav-link " aria-disabled="true">Aprobado</a>
+                </li>
+                <li onClick={(e) => {
+                    e.target.className = "nav-link  active"
+                    setNavbarActive("Listo")
+                }} className="nav-item">
+                    <a className="nav-link " aria-disabled="true">Listo</a>
                 </li>
                 <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"></a>
