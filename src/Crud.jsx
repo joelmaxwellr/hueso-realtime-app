@@ -17,7 +17,7 @@ const styleBoot = {
 }
 
 
-export default function Crud() {
+export default function Crud({ signingOut }) {
     const [usuarioActual, setUsuarioActual] = useState("")
     const [nombreCliente, setNombreCliente] = useState("")
     const [material, setMaterial] = useState("DTF")
@@ -35,6 +35,7 @@ export default function Crud() {
     const [navBarActive, setNavbarActive] = useState("principal")
     const [filteredData, setFilteredData] = useState([]);
     const [busqueda, setBusqueda] = useState("");
+    const [mensajeAlerta, setMensajeAlerta] = useState("");
 
     const auth = getAuth()
 
@@ -60,30 +61,37 @@ export default function Crud() {
         /*  setFecha(fechaFormateada);
          setFechaOrden(fechaOrdens);
          setHora(horaFormateada); */
-        try {
-            await push(ref(db, "ordenes"), {
-                nombreCliente: nombreCliente,
-                material: material,
-                nota: nota,
-                precio: precio,
-                fecha: fechaFormateada,
-                fechaOrden: fechaOrdens,
-                hora: horaFormateada,
-                estadoImpresion: estadoImpresion,
-                usuarioActual: usuarioActual
-            });
-            console.log("Document written with ID: ");
-        } catch (e) {
-            console.error("Error adding document: ", e);
-        }
-        console.log(estadoImpresion)
-        setFecha(fechaFormateada);
-        setFechaOrden(fechaOrdens);
-        setHora(horaFormateada);
+        if (nombreCliente || precio) {
+            try {
+                await push(ref(db, "ordenes"), {
+                    nombreCliente: nombreCliente,
+                    material: material,
+                    nota: nota,
+                    precio: precio,
+                    fecha: fechaFormateada,
+                    fechaOrden: fechaOrdens,
+                    hora: horaFormateada,
+                    estadoImpresion: estadoImpresion,
+                    usuarioActual: usuarioActual
+                });
+                console.log("Document written with ID: ");
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+            console.log(estadoImpresion)
+            setFecha(fechaFormateada);
+            setFechaOrden(fechaOrdens);
+            setHora(horaFormateada);
 
-        fetchData();
-        limpiarCampos();
+            fetchData();
+            limpiarCampos();
+        } else {
+
+            console.log("Campos vacios")
+        }
     }
+
+
 
     const fetchData = async () => {
         const dbRef = ref(db, 'ordenes');
@@ -125,7 +133,7 @@ export default function Crud() {
             if (elemento.nombreCliente.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())
                 /* || elemento.company.name.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()) */
             ) {
-                console.log(elemento)
+
                 return elemento;
             }
         });
@@ -203,21 +211,26 @@ export default function Crud() {
         str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return str.join(".");
     }
-
+    const colorTabla = actualizando && 'table-secondary'
 
     return (
         <div>
+
             <h3>
                 {usuarioActual}
             </h3>
-            <div className='container fixed-top navbar-expand-lg bg-white p-4'>
+            <div className='container fixed-top navbar-expand-lg bg-white p-3'>
+
 
 
 
                 <div className='input-group mb-3 container-fluid'>
 
+                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
+                    <div className="invalid-feedback">
+                        Campos vacios!
+                    </div>
 
-                    <input className='form-control' type="text" id='nombreCliente' placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
 
 
                     <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
@@ -241,7 +254,7 @@ export default function Crud() {
                         <option value="Entregado" className={style.Entregado}>Entregado</option>
                     </select>
                     <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
-                    <input className='form-control' type="text" id='buscador' placeholder='Buscador' value={busqueda}
+                    <input className='form-control' type="text" id='buscador' placeholder='Buscar cliente' value={busqueda}
                         onChange={(e) => {
                             setBusqueda(e.target.value)
                             filtrar(e.target.value)
@@ -254,10 +267,10 @@ export default function Crud() {
                             <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
                 </div>
 
-                <Navbar setNavbarActive={setNavbarActive} />
+                <Navbar setNavbarActive={setNavbarActive} signingOut={signingOut} />
             </div>
             <div>
-                <table className="table mx-auto">
+                <table className="table mx-auto m-5">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -269,6 +282,8 @@ export default function Crud() {
                             <th scope="col">Fecha</th>
                             <th scope="col">Hora</th>
                             <th scope="col">Acciones</th>
+                            <th scope="col"></th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -279,21 +294,21 @@ export default function Crud() {
                                     <td colSpan="10">No hay ordenes de trabajo</td>
                                 </tr>
                             ) : filteredData.map(item => (
-                                <tr key={item.id}>
+                                <tr key={item.id} className={item.id ? colorTabla : ''}>
 
                                     <th scope="row">{item.orden}</th>
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
-                                    <td>{separator(item.precio)}</td>
+                                    <td >{separator(item.precio)}</td>
                                     <td >{item.material}</td>
                                     <td>{item.nota}</td>
-                                    <td /* style= {{backgroundColor: style.Aprobado}}  */ className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
-                                    <td>{item.fecha}</td>
+                                    <td className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
+                                    <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
 
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
-                                    {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>  */}
+                                    {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
                                     {/* <td>{item.estatus}</td> */}

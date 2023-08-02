@@ -70,8 +70,8 @@ export default function Auth(props) {
       )}
       {logStatus && (
         <div>
-          <button className='btn btn-secondary' onClick={signingOut}>Cerrar Sesión</button>
-          <Crud />
+          
+          <Crud signingOut={signingOut}/>
         </div>
       )}
     </div>
