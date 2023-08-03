@@ -32,8 +32,8 @@ const Navbar = ({ setNavbarActive, signingOut }) => {
                     <a className={`nav-link ${activeTab === "Impresión Directa" ? "active" : ""}`} href="#">Impresión Directa</a>
                 </li>
 
-                <li onClick={() => handleTabClick("En Espera")} className={`nav-item ${activeTab === "En Espera" ? "active" : ""}`}>
-                    <a className={`nav-link ${activeTab === "En Espera" ? "active" : ""}`} href="#">En Espera</a>
+                <li onClick={() => handleTabClick("Espera")} className={`nav-item ${activeTab === "Espera" ? "active" : ""}`}>
+                    <a className={`nav-link ${activeTab === "Espera" ? "active" : ""}`} href="#">Espera</a>
                 </li>
               
                 <li onClick={() => handleTabClick("Aprobado")} className={`nav-item ${activeTab === "Aprobado" ? "active" : ""}`}>

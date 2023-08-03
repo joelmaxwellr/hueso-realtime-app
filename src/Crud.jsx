@@ -7,7 +7,7 @@ import { getAuth } from "firebase/auth";
 import Navbar from './NavBar';
 
 const styleBoot = {
-    EnEspera: 'bg-warning text-white',
+    Espera: 'bg-warning text-white',
     Aprobado: 'bg-primary text-white',
     Cancelado: 'bg-danger text-white',
     Detenido: 'bg-warning-subtle ',
@@ -27,7 +27,7 @@ export default function Crud({ signingOut }) {
     const [fecha, setFecha] = useState("")
     const [fechaOrden, setFechaOrden] = useState("")
     const [orden, setOrden] = useState("")
-    const [estadoImpresion, setEstadoImpresion] = useState({ value: "En Espera", className: style["EnEspera"] })
+    const [estadoImpresion, setEstadoImpresion] = useState({ value: "Espera", className: style["Espera"] })
     const [hora, setHora] = useState("")
     const [actualizando, setActualizando] = useState(false)
     const [mostrarBoton, setMostrarBoton] = useState(false)
@@ -36,6 +36,7 @@ export default function Crud({ signingOut }) {
     const [filteredData, setFilteredData] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [mensajeAlerta, setMensajeAlerta] = useState("");
+    const [cambiosEstado, setCambiosEstado] = useState([]);
 
     const auth = getAuth()
 
@@ -48,7 +49,7 @@ export default function Crud({ signingOut }) {
         setPrecio(0);
         setnota("");
         setMaterial("DTF")
-        setEstadoImpresion({ value: "En Espera", className: style["EnEspera"] })
+        setEstadoImpresion({ value: "Espera", className: style["Espera"] })
     }
 
 
@@ -147,7 +148,7 @@ export default function Crud({ signingOut }) {
             filtroData(navBarActive); // Llamar al filtro después de obtener datos y si navBarActive es verdadero
         }
         setUsuarioActual(auth.currentUser.email)
-    }, [navBarActive, busqueda]);
+    }, [navBarActive, busqueda, cambiosEstado]);
 
     const borrar = async (id) => {
         try {
@@ -171,20 +172,35 @@ export default function Crud({ signingOut }) {
 
 
     }
-
     const guardarActualizacion = async () => {
+        const fechaActual = new Date();
+        const fechaOrdens = fechaActual.getTime();
+        const fechaFormateada = fechaActual.toLocaleDateString();
+        const horaFormateada = fechaActual.toLocaleTimeString();
+
         try {
             const dbRef = ref(db, `ordenes/${clienteActualizando.id}`);
+        const nuevoCambiosEstado = {
+            estado: clienteActualizando.estadoImpresion.value,
+            usuarioCambioEstado: usuarioActual,
+            fechaOrdenCambioEstado: fechaOrdens,
+            fecha: fechaFormateada,
+            hora: horaFormateada
+        };
+
+        setCambiosEstado([...cambiosEstado, nuevoCambiosEstado]);
+
             await set(dbRef, {
                 nombreCliente: nombreCliente,
                 material: material,
                 nota: nota,
                 precio: precio,
                 fecha: clienteActualizando.fecha,
-                fechaOrden: clienteActualizando.fechaOrden,
+                fechaOrden: fechaOrdens,
                 hora: clienteActualizando.hora,
                 estadoImpresion: estadoImpresion,
-                /* usuarioActual: usuarioActual */
+                /* datosCambiosEstado: cambiosEstado,  */// Ya incluye el nuevo estado agregado arriba
+                /* usuarioActual: clienteActualizando.usuarioActual */
             });
             console.log("Document successfully updated!");
         } catch (e) {
@@ -195,9 +211,8 @@ export default function Crud({ signingOut }) {
         limpiarCampos();
         fetchData();
         setMostrarBoton(false);
+    };
 
-
-    }
 
     const cancelar = () => {
         setActualizando(false);
@@ -245,7 +260,7 @@ export default function Crud({ signingOut }) {
                         id="estadoImpresion"
                         value={estadoImpresion.value}
                         onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
-                        <option value="EnEspera" className={style.EnEspera}>En Espera</option>
+                        <option value="Espera" className={style.Espera}>Espera</option>
                         <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
                         <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
                         <option value="Detenido" className={style.Detenido}>Detenido</option>
@@ -260,7 +275,7 @@ export default function Crud({ signingOut }) {
                             filtrar(e.target.value)
                         }} />
                 </div>
-                <div className=''>
+                <div >
 
                     {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear</button>  </div>
                         : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización</button>
@@ -283,7 +298,7 @@ export default function Crud({ signingOut }) {
                             <th scope="col">Hora</th>
                             <th scope="col">Acciones</th>
                             <th scope="col"></th>
-                            
+
                         </tr>
                     </thead>
                     <tbody>
@@ -294,7 +309,7 @@ export default function Crud({ signingOut }) {
                                     <td colSpan="10">No hay ordenes de trabajo</td>
                                 </tr>
                             ) : filteredData.map(item => (
-                                <tr key={item.id} className={item.id ? colorTabla : ''}>
+                                <tr key={item.id} className={colorTabla}>
 
                                     <th scope="row">{item.orden}</th>
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
@@ -308,7 +323,7 @@ export default function Crud({ signingOut }) {
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
-                                    {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
+                                    <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
                                     {/* <td>{item.estatus}</td> */}

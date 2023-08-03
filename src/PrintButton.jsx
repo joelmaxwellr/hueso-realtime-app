@@ -11,7 +11,7 @@ const PrintButton = ({ objeto, mostrarBoton, separator}) => {
     console.log(selectedCliente)
   };
   useEffect(() => {
-    console.log(selectedCliente);
+    
   }, [selectedCliente]);
 
   const handlePrint = (cliente) => {
