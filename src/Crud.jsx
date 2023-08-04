@@ -162,12 +162,12 @@ export default function Crud({ signingOut }) {
         }
         setUsuarioActual(auth.currentUser.email)
     }, [navBarActive, busqueda, cambiosEstado,]);
-
-    const clienteInputRef = useRef(null);
+/* 
+    const clienteInputRef = useRef(null); */
 
     useEffect(() => {
         filtroDataEspera(filteredData)
-        clienteInputRef.current.focus();
+        /* clienteInputRef.current.focus(); */
     }, [filteredData, cambiosEstado]);
 
     const borrar = async (id) => {
@@ -267,7 +267,7 @@ export default function Crud({ signingOut }) {
 
                 <div className='input-group mb-3 container-fluid'>
 
-                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} ref={clienteInputRef} onChange={(e) => setNombreCliente(e.target.value)} />
+                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} /* ref={clienteInputRef} */ onChange={(e) => setNombreCliente(e.target.value)} />
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
@@ -352,7 +352,7 @@ export default function Crud({ signingOut }) {
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
-                                    <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
+                                    {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
                                     {/* <td>{item.estatus}</td> */}
