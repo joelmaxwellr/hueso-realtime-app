@@ -41,6 +41,13 @@ export default function Auth(props) {
     });
   };
 
+  
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      signIn();
+    }
+};
+
   return (
     <div className='container mx-auto m-5 p-5'  style={{'height':'50%'}}>
       {!logStatus && (
@@ -53,7 +60,7 @@ export default function Auth(props) {
             </div>
             <div className="mb-3">
               <label htmlFor="password">Contraseña</label>
-              <input className='form-control' type="password" id='password' onChange={(e) => setPassword(e.target.value)} />
+              <input className='form-control' type="password" id='password' onKeyDown={handleKeyDown} onChange={(e) => setPassword(e.target.value)} />
             </div>
           
             <button className='btn btn-success' onClick={signIn}>Iniciar Sesión</button>
