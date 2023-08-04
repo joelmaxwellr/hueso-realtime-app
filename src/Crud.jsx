@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react'
+import React, { useState, useEffect, createContext,  useRef  } from 'react'
 import { set } from 'firebase/database';
 import PrintButton from './PrintButton';
 import { getDatabase, ref, push, onValue, remove } from "firebase/database";
@@ -37,6 +37,8 @@ export default function Crud({ signingOut }) {
     const [busqueda, setBusqueda] = useState("");
     const [mensajeAlerta, setMensajeAlerta] = useState("");
     const [cambiosEstado, setCambiosEstado] = useState([]);
+    const [filtroEspera, setFiltroEspera] = useState([]);
+    const [activeTab, setActiveTab] = useState("principal");
 
     const auth = getAuth()
 
@@ -83,6 +85,8 @@ export default function Crud({ signingOut }) {
             setFecha(fechaFormateada);
             setFechaOrden(fechaOrdens);
             setHora(horaFormateada);
+            setActiveTab("Principal")
+            
 
             fetchData();
             limpiarCampos();
@@ -114,7 +118,7 @@ export default function Crud({ signingOut }) {
     };
 
     const filtroData = (busqueda) => {
-        if (busqueda === "principal") {
+        if (busqueda === "Principal") {
             setFilteredData(data); // Mostrar todos los elementos sin filtrar
         }
         else if (busqueda === "Cancelado") {
@@ -126,6 +130,14 @@ export default function Crud({ signingOut }) {
             const resultado = data.filter((Element) => Element.material == busqueda || Element.estadoImpresion.value == busqueda);
             setFilteredData(resultado);
         }
+    }
+
+    const filtroDataEspera = () => {
+        
+            const resultado = data.filter((Element) => Element.estadoImpresion.value === "Espera");
+
+            setFiltroEspera(resultado);
+        
     }
 
 
@@ -140,15 +152,22 @@ export default function Crud({ signingOut }) {
         });
         setData(resultadosBusqueda);
     }
-
-
+    
     useEffect(() => {
+       
         fetchData();
         if (navBarActive) {
             filtroData(navBarActive); // Llamar al filtro después de obtener datos y si navBarActive es verdadero
         }
         setUsuarioActual(auth.currentUser.email)
-    }, [navBarActive, busqueda, cambiosEstado]);
+    }, [navBarActive, busqueda, cambiosEstado,]);
+
+    const clienteInputRef = useRef(null);
+
+    useEffect(() => {
+        filtroDataEspera(filteredData)
+        clienteInputRef.current.focus();
+    }, [filteredData, cambiosEstado]);
 
     const borrar = async (id) => {
         try {
@@ -180,15 +199,15 @@ export default function Crud({ signingOut }) {
 
         try {
             const dbRef = ref(db, `ordenes/${clienteActualizando.id}`);
-        const nuevoCambiosEstado = {
-            estado: clienteActualizando.estadoImpresion.value,
-            usuarioCambioEstado: usuarioActual,
-            fechaOrdenCambioEstado: fechaOrdens,
-            fecha: fechaFormateada,
-            hora: horaFormateada
-        };
+            const nuevoCambiosEstado = {
+                estado: clienteActualizando.estadoImpresion.value,
+                usuarioCambioEstado: usuarioActual,
+                fechaOrdenCambioEstado: fechaOrdens,
+                fecha: fechaFormateada,
+                hora: horaFormateada
+            };
 
-        setCambiosEstado([...cambiosEstado, nuevoCambiosEstado]);
+            setCambiosEstado([...cambiosEstado, nuevoCambiosEstado]);
 
             await set(dbRef, {
                 nombreCliente: nombreCliente,
@@ -200,7 +219,7 @@ export default function Crud({ signingOut }) {
                 hora: clienteActualizando.hora,
                 estadoImpresion: estadoImpresion,
                 /* datosCambiosEstado: cambiosEstado,  */// Ya incluye el nuevo estado agregado arriba
-                /* usuarioActual: clienteActualizando.usuarioActual */
+                usuarioActual: usuarioActual
             });
             console.log("Document successfully updated!");
         } catch (e) {
@@ -228,9 +247,15 @@ export default function Crud({ signingOut }) {
     }
     const colorTabla = actualizando && 'table-secondary'
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            crear();
+        }
+    };
+
     return (
         <div>
-
+<div style={{height:"90px"}}></div>
             <h3>
                 {usuarioActual}
             </h3>
@@ -241,14 +266,14 @@ export default function Crud({ signingOut }) {
 
                 <div className='input-group mb-3 container-fluid'>
 
-                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
+                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente}  ref={clienteInputRef}  onChange={(e) => setNombreCliente(e.target.value)} />
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
 
 
 
-                    <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} />
+                    <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)}  onKeyDown={handleKeyDown}  />
                     <select className='form-control' name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
                         <option value="DTF">DTF</option>
                         <option value="UV">UV</option>
@@ -256,7 +281,7 @@ export default function Crud({ signingOut }) {
                         <option value="Impresión Directa">Impresion Directa</option>
                     </select>
                     <select name="estadoImpresion"
-                        className={estadoImpresion.className}
+                        className={estadoImpresion.className ? estadoImpresion.className : undefined}
                         id="estadoImpresion"
                         value={estadoImpresion.value}
                         onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
@@ -282,9 +307,62 @@ export default function Crud({ signingOut }) {
                             <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
                 </div>
 
-                <Navbar setNavbarActive={setNavbarActive} signingOut={signingOut} />
+                <Navbar setNavbarActive={setNavbarActive} signingOut={signingOut} setActiveTab={setActiveTab} activeTab={activeTab} />
             </div>
             <div>
+
+            
+            <h5>Ordenes En Espera</h5>
+                <table className="table mx-auto m-5" >
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Material</th>
+                            <th scope="col">Nota</th>
+                            <th scope="col">Estatus</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Hora</th>
+                            <th scope="col">Acciones</th>
+                            <th scope="col"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {
+                            filtroEspera.length == 0 ? (
+                                <tr>
+                                    <td colSpan="10">No hay ordenes En Espera</td>
+                                </tr>
+                            ) : filtroEspera.map(item => (
+                                <tr key={item.id} className={colorTabla}>
+
+                                    <th scope="row">{item.orden}</th>
+                                    <td className='text-capitalize'>{item.nombreCliente}</td>
+                                    <td >{separator(item.precio)}</td>
+                                    <td >{item.material}</td>
+                                    <td>{item.nota}</td>
+                                    <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
+                                    <td className={colorTabla} >{item.fecha}</td>
+                                    <td>{item.hora}</td>
+
+
+
+                                    <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
+                                    <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
+                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
+
+                                    {/* <td>{item.estatus}</td> */}
+                                </tr>
+                            ))
+
+                        }
+                    </tbody>
+
+                </table>
+                <h5>Ordenes {activeTab}</h5>
                 <table className="table mx-auto m-5">
                     <thead>
                         <tr>
@@ -316,7 +394,7 @@ export default function Crud({ signingOut }) {
                                     <td >{separator(item.precio)}</td>
                                     <td >{item.material}</td>
                                     <td>{item.nota}</td>
-                                    <td className={item.estadoImpresion.className}>{item.estadoImpresion.value}</td>
+                                    <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
 
@@ -334,6 +412,12 @@ export default function Crud({ signingOut }) {
                     </tbody>
 
                 </table>
+
+
+                        
+
+                      
+               
 
             </div>
 

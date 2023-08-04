@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-const Navbar = ({ setNavbarActive, signingOut }) => {
+const Navbar = ({ setNavbarActive, signingOut, setActiveTab, activeTab }) => {
 
-    const [activeTab, setActiveTab] = useState("principal");
+    
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -12,8 +12,8 @@ const Navbar = ({ setNavbarActive, signingOut }) => {
     return (
         <div>
             <ul className="nav nav-tabs p-1">
-            <li onClick={() => handleTabClick("principal")} className={`nav-item ${activeTab === "principal" ? "active" : ""}`}>
-                    <a className={`nav-link ${activeTab === "principal" ? "active" : ""}`} aria-current="page" href="#">Ordenes Principal</a>
+            <li onClick={() => handleTabClick("Principal")} className={`nav-item ${activeTab === "Principal" ? "active" : ""}`}>
+                    <a className={`nav-link ${activeTab === "Principal" ? "active" : ""}`} aria-current="page" href="#">Ordenes Principal</a>
                 </li>
 
                 <li onClick={() => handleTabClick("DTF")} className={`nav-item ${activeTab === "DTF" ? "active" : ""}`}>
