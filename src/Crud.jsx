@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext,  useRef  } from 'react'
+import React, { useState, useEffect, createContext, useRef } from 'react'
 import { set } from 'firebase/database';
 import PrintButton from './PrintButton';
 import { getDatabase, ref, push, onValue, remove } from "firebase/database";
@@ -15,6 +15,7 @@ const styleBoot = {
     Listo: 'bg-info bg-opacity-50 text-white',
     Entregado: 'bg-success text-white'
 }
+
 
 
 export default function Crud({ signingOut }) {
@@ -86,7 +87,7 @@ export default function Crud({ signingOut }) {
             setFechaOrden(fechaOrdens);
             setHora(horaFormateada);
             setActiveTab("Principal")
-            
+
 
             fetchData();
             limpiarCampos();
@@ -133,11 +134,11 @@ export default function Crud({ signingOut }) {
     }
 
     const filtroDataEspera = () => {
-        
-            const resultado = data.filter((Element) => Element.estadoImpresion.value === "Espera");
 
-            setFiltroEspera(resultado);
-        
+        const resultado = data.filter((Element) => Element.estadoImpresion.value === "Espera");
+
+        setFiltroEspera(resultado);
+
     }
 
 
@@ -152,9 +153,9 @@ export default function Crud({ signingOut }) {
         });
         setData(resultadosBusqueda);
     }
-    
+
     useEffect(() => {
-       
+
         fetchData();
         if (navBarActive) {
             filtroData(navBarActive); // Llamar al filtro después de obtener datos y si navBarActive es verdadero
@@ -255,7 +256,7 @@ export default function Crud({ signingOut }) {
 
     return (
         <div>
-<div style={{height:"90px"}}></div>
+            <div style={{ height: "90px" }}></div>
             <h3>
                 {usuarioActual}
             </h3>
@@ -266,14 +267,14 @@ export default function Crud({ signingOut }) {
 
                 <div className='input-group mb-3 container-fluid'>
 
-                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente}  ref={clienteInputRef}  onChange={(e) => setNombreCliente(e.target.value)} />
+                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} ref={clienteInputRef} onChange={(e) => setNombreCliente(e.target.value)} />
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
 
 
 
-                    <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)}  onKeyDown={handleKeyDown}  />
+                    <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} onKeyDown={handleKeyDown} />
                     <select className='form-control' name="material" id="material" value={material} onChange={(e) => setMaterial(e.target.value)}>
                         <option value="DTF">DTF</option>
                         <option value="UV">UV</option>
@@ -311,8 +312,8 @@ export default function Crud({ signingOut }) {
             </div>
             <div>
 
-            
-            <h5>Ordenes En Espera</h5>
+
+                <h5>Ordenes En Espera</h5>
                 <table className="table mx-auto m-5" >
                     <thead>
                         <tr>
@@ -414,10 +415,10 @@ export default function Crud({ signingOut }) {
                 </table>
 
 
-                        
 
-                      
-               
+
+
+
 
             </div>
 
