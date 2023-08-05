@@ -162,8 +162,8 @@ export default function Crud({ signingOut }) {
         }
         setUsuarioActual(auth.currentUser.email)
     }, [navBarActive, busqueda, cambiosEstado,]);
-/* 
-    const clienteInputRef = useRef(null); */
+    /* 
+        const clienteInputRef = useRef(null); */
 
     useEffect(() => {
         filtroDataEspera(filteredData)
@@ -254,6 +254,47 @@ export default function Crud({ signingOut }) {
         }
     };
 
+    const sumaData = (filteredData) => {
+        var sumaDTF = 0
+        var sumaUV = 0
+        var sumaSubli = 0
+        var sumaDirect = 0
+        var sumaTotal = 0
+        const result = filteredData.map(e => {
+            if (e.material == "Sublimación") {
+
+                var n = parseInt(e.precio)
+                sumaSubli = sumaSubli + n
+            }
+            else if (e.material == "DTF") {
+
+                var n = parseInt(e.precio)
+                sumaDTF = sumaDTF + n
+            }
+            else if (e.material == "UV") {
+
+                var n = parseInt(e.precio)
+                sumaUV = sumaUV + n
+            }
+            else if (e.material == "Impresión Directa") {
+
+                var n = parseInt(e.precio)
+                sumaDirect += n
+            }
+
+           
+
+                var n = parseInt(e.precio)
+                sumaTotal= sumaTotal + n
+            
+
+        })
+        console.log(`DTF = ${sumaDTF}, UV = ${sumaUV}, subli = ${sumaSubli}, Directa = ${sumaDirect}  Total = ${sumaTotal}`)
+    }
+    if (usuarioActual=="joelmaxwellr@gmail.com") {
+        sumaData(data)
+    }
+
     return (
         <div>
             <div style={{ height: "90px" }}></div>
@@ -342,7 +383,7 @@ export default function Crud({ signingOut }) {
 
                                     <th scope="row">{item.orden}</th>
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
-                                    <td >{separator(item.precio)}</td>
+                                    <td className="text-right"><label>RD$</label> {separator(item.precio)}</td>
                                     <td >{item.material}</td>
                                     <td>{item.nota}</td>
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
@@ -393,7 +434,9 @@ export default function Crud({ signingOut }) {
 
                                     <th scope="row">{item.orden}</th>
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
-                                    <td >{separator(item.precio)}</td>
+                                    <td className="text-right">RD$ {separator(item.precio)}</td>
+
+
                                     <td >{item.material}</td>
                                     <td>{item.nota}</td>
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
@@ -405,6 +448,7 @@ export default function Crud({ signingOut }) {
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
                                     {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
+
 
                                     {/* <td>{item.estatus}</td> */}
                                 </tr>
