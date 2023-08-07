@@ -40,6 +40,12 @@ export default function Crud({ signingOut }) {
     const [cambiosEstado, setCambiosEstado] = useState([]);
     const [filtroEspera, setFiltroEspera] = useState([]);
     const [activeTab, setActiveTab] = useState("principal");
+    const [textoColapsadoVisible, setTextoColapsadoVisible] = useState(null);
+
+    // Función para ocultar el contenido colapsado
+    const ocultarTextoColapsado = () => {
+      setTextoColapsadoVisible(false);
+    };
 
     const auth = getAuth()
 
@@ -170,6 +176,16 @@ export default function Crud({ signingOut }) {
         /* clienteInputRef.current.focus(); */
     }, [filteredData, cambiosEstado]);
 
+    useEffect(() => {
+        // Agregar un evento de clic al documento
+        document.addEventListener('click', ocultarTextoColapsado);
+    
+        // Remover el evento de clic cuando el componente se desmonte
+        return () => {
+          document.removeEventListener('click', ocultarTextoColapsado);
+        };
+      }, []);
+
     const borrar = async (id) => {
         try {
             await remove(ref(db, `ordenes/${id}`));
@@ -192,27 +208,27 @@ export default function Crud({ signingOut }) {
 
 
     }
-    const guardarActualizacion =  () => {
+    const guardarActualizacion = () => {
         const fechaActual = new Date();
         const fechaOrdens = fechaActual.getTime();
         const fechaFormateada = fechaActual.toLocaleDateString();
         const horaFormateada = fechaActual.toLocaleTimeString();
-        var nuevoCambiosEstado = clienteActualizando.estadoImpresion.value
+        /*  var nuevoCambiosEstado = clienteActualizando.estadoImpresion.value */
 
-     /*    const nuevoCambiosEstado = {
+        const nuevoCambiosEstado = {
             estado: clienteActualizando.estadoImpresion.value,
             usuarioCambioEstado: usuarioActual,
             fechaOrdenCambioEstado: fechaOrdens,
             fecha: fechaFormateada,
             hora: horaFormateada
-        }; */
+        };
         setCambiosEstado((prevCambiosEstado) => [...prevCambiosEstado, nuevoCambiosEstado]);
         try {
             const dbRef = ref(db, `ordenes/${clienteActualizando.id}`);
-           
 
 
-         update(dbRef, {
+
+            update(dbRef, {
                 nombreCliente: nombreCliente,
                 material: material,
                 nota: nota,
@@ -221,7 +237,7 @@ export default function Crud({ signingOut }) {
                 fechaOrden: fechaOrdens,
                 hora: clienteActualizando.hora,
                 estadoImpresion: estadoImpresion,
-               /*  datosCambiosEstado: cambiosEstado, */ // Ya incluye el nuevo estado agregado arriba
+                datosCambiosEstado: [...cambiosEstado, nuevoCambiosEstado], // Ya incluye el nuevo estado agregado arriba
                 /* usuarioActual: usuarioActual */
             });
             console.log("Document successfully updated!");
@@ -249,11 +265,11 @@ export default function Crud({ signingOut }) {
         return str.join(".");
     }
     function acortarUsuario(usuario) {
-            const codigoUsuario = usuario.slice(0,3)
-            return codigoUsuario
+        const codigoUsuario = usuario.slice(0, 3)
+        return codigoUsuario
 
     }
-    
+
 
     const colorTabla = actualizando && 'table-secondary'
 
@@ -291,16 +307,16 @@ export default function Crud({ signingOut }) {
                 sumaDirect += n
             }
 
-           
 
-                var n = parseInt(e.precio)
-                sumaTotal= sumaTotal + n
-            
+
+            var n = parseInt(e.precio)
+            sumaTotal = sumaTotal + n
+
 
         })
         console.log(`DTF = ${sumaDTF}, UV = ${sumaUV}, subli = ${sumaSubli}, Directa = ${sumaDirect}  Total = ${sumaTotal}`)
     }
-    if (usuarioActual=="joelmaxwellr@gmail.com") {
+    if (usuarioActual == "joelmaxwellr@gmail.com") {
         sumaData(data)
     }
 
@@ -367,7 +383,7 @@ export default function Crud({ signingOut }) {
                 <table className="table mx-auto m-5" >
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
@@ -391,7 +407,7 @@ export default function Crud({ signingOut }) {
                             ) : filtroEspera.map(item => (
                                 <tr key={item.id} className={colorTabla}>
 
-                                    <th scope="row">{item.orden}</th>
+                                    {/*   <th scope="row">{item.orden}</th> */}
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
                                     <td className="text-right"><label>RD$</label> {separator(item.precio)}</td>
                                     <td >{item.material}</td>
@@ -399,9 +415,31 @@ export default function Crud({ signingOut }) {
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
-                                    <td>{item.usuarioActual? acortarUsuario(item.usuarioActual): '-'}</td>
-                                    {/* <td>{item.datosCambiosEstado? console.log(item.datosCambiosEstado): '-'}</td> */}
+                                    <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
+                                    <td>
+                                        <button data-toggle="tooltip"  href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
+                                            className="btn btn-info"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target={`#textoColapsado-${item.id}espera`}
+                                            onClick={() => {
+                                                if (textoColapsadoVisible === item.id) {
+                                                  // Si la orden está activa, ciérrala al hacer clic nuevamente
+                                                  setTextoColapsadoVisible(null);
+                                                } else {
+                                                  // Si se hace clic en una nueva orden, cámbiela
+                                                  setTextoColapsadoVisible(item.id);
+                                                }
+                                              }}
+                                        >
+                                            Info
+                                        </button>
+                                        <div id={`textoColapsado-${item.id}espera`} className={`collapse position-absolute bg-white card p-2 ${textoColapsadoVisible === item.id ? 'show' : ''}`}  >
+                                            {item.datosCambiosEstado ? item.datosCambiosEstado.map((e, id) => (
+                                                <p key={id}>- {e.estado} - {e.hora} -</p>
+                                        /* console.log(e.value) */)) : '-'}
 
+                                        </div>
+                                    </td>
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
@@ -421,11 +459,11 @@ export default function Crud({ signingOut }) {
                 <table className="table mx-auto m-5">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
-                            <th scope="col">Nota</th>
+                            {/*  <th scope="col">Nota</th> */}
                             <th scope="col">Estatus</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Hora</th>
@@ -445,18 +483,33 @@ export default function Crud({ signingOut }) {
                             ) : filteredData.map(item => (
                                 <tr key={item.id} className={colorTabla}>
 
-                                    <th scope="row">{item.orden}</th>
-                                    <td className='text-capitalize'>{item.nombreCliente}</td>
-                                    <td className="text-right">RD$ {separator(item.precio)}</td>
+                                    {/* <th scope="row">{item.orden}</th> */}
+                                    <td className='text-capitalize text-right'>{item.nombreCliente}</td>
+                                    <td className='text-left' >RD$ {separator(item.precio)}</td>
 
 
                                     <td >{item.material}</td>
-                                    <td>{item.nota}</td>
+                                    {/* <td>{item.nota}</td> */}
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
-                                    <td>{item.usuarioActual? acortarUsuario(item.usuarioActual): '-'}</td>
-                                    {/*  <td>{item.datosCambiosEstado?console.log(item.datosCambiosEstado): '-'}</td> */}
+                                    <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            className="btn btn-info"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target={`#textoColapsado-${item.id}`}
+                                            
+                                        >
+                                            Info
+                                        </button>
+                                        <div id={`textoColapsado-${item.id}`} className="collapse position-absolute bg-white card p-2">
+                                        {item.datosCambiosEstado ? item.datosCambiosEstado.map((e, id) => (
+                                                <p key={id}>- {e.estado} - {e.hora} - {acortarUsuario(e.usuarioCambioEstado)}</p>
+                                        /* console.log(e.value) */)) : '-'}
+                                        </div>
+                                    </td>
 
 
 
@@ -464,6 +517,20 @@ export default function Crud({ signingOut }) {
                                     {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
+                                    {/* <td>
+                                        <button
+                                            type="button"
+                                            className="btn btn-info"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target={`#textoColapsado-${item.id}`}
+                                        >
+                                            info
+                                        </button>
+                                        <div id={`textoColapsado-${item.id}`} className="collapse">
+                                            <p>cliente {item.nombreCliente}</p>
+                                            hol
+                                    </td>
+                                        </div> */}
 
                                     {/* <td>{item.estatus}</td> */}
                                 </tr>
