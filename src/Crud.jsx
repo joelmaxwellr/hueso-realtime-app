@@ -33,18 +33,20 @@ export default function Crud({ signingOut }) {
     const [actualizando, setActualizando] = useState(false)
     const [mostrarBoton, setMostrarBoton] = useState(false)
     const [clienteActualizando, setClienteActualizando] = useState(null);
-    const [navBarActive, setNavbarActive] = useState("principal")
+    const [navBarActive, setNavbarActive] = useState("Principal")
     const [filteredData, setFilteredData] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [mensajeAlerta, setMensajeAlerta] = useState("");
     const [cambiosEstado, setCambiosEstado] = useState([]);
     const [filtroEspera, setFiltroEspera] = useState([]);
-    const [activeTab, setActiveTab] = useState("principal");
+    const [activeTab, setActiveTab] = useState("Principal");
     const [textoColapsadoVisible, setTextoColapsadoVisible] = useState(null);
+    const [colapsosVisibles, setColapsosVisibles] = useState({});
 
     // Función para ocultar el contenido colapsado
-    const ocultarTextoColapsado = () => {
-      setTextoColapsadoVisible(false);
+
+    const ocultarTextoColapsado = (id) => {
+        setColapsosVisibles((prevColapsos) => ({ ...prevColapsos, [id]: false }));
     };
 
     const auth = getAuth()
@@ -92,10 +94,11 @@ export default function Crud({ signingOut }) {
             setFecha(fechaFormateada);
             setFechaOrden(fechaOrdens);
             setHora(horaFormateada);
-            setActiveTab("Principal")
-
-
             fetchData();
+            setActiveTab("Principal")
+            setNavbarActive("Principal")
+
+
             limpiarCampos();
         } else {
 
@@ -119,9 +122,11 @@ export default function Crud({ signingOut }) {
                 setFilteredData(newArray); // Actualizar la data filtrada al obtener nuevos datos
             } else {
                 setData([]);
-                setFilteredData([]); // Si no hay datos, también limpiar la data filtrada
+                setFilteredData([]);
+                 // Si no hay datos, también limpiar la data filtrada
             }
         });
+        
     };
 
     const filtroData = (busqueda) => {
@@ -161,6 +166,8 @@ export default function Crud({ signingOut }) {
     }
 
     useEffect(() => {
+        
+
 
         fetchData();
         if (navBarActive) {
@@ -179,12 +186,12 @@ export default function Crud({ signingOut }) {
     useEffect(() => {
         // Agregar un evento de clic al documento
         document.addEventListener('click', ocultarTextoColapsado);
-    
+
         // Remover el evento de clic cuando el componente se desmonte
         return () => {
-          document.removeEventListener('click', ocultarTextoColapsado);
+            document.removeEventListener('click', ocultarTextoColapsado);
         };
-      }, []);
+    }, []);
 
     const borrar = async (id) => {
         try {
@@ -196,6 +203,7 @@ export default function Crud({ signingOut }) {
         fetchData();
     }
     const actualizar = (item) => {
+
         setNombreCliente(item.nombreCliente);
         setMaterial(item.material);
         setPrecio(item.precio);
@@ -204,6 +212,7 @@ export default function Crud({ signingOut }) {
         setActualizando(true);
         setClienteActualizando(item);
         setMostrarBoton(true)
+        ocultarTextoColapsado(item.id);
 
 
 
@@ -387,7 +396,7 @@ export default function Crud({ signingOut }) {
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
-                            <th scope="col">Nota</th>
+                           {/*  <th scope="col">Nota</th> */}
                             <th scope="col">Estatus</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Hora</th>
@@ -411,39 +420,37 @@ export default function Crud({ signingOut }) {
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
                                     <td className="text-right"><label>RD$</label> {separator(item.precio)}</td>
                                     <td >{item.material}</td>
-                                    <td>{item.nota}</td>
+                                    {/* <td>{item.nota}</td> */}
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
-                                    <td>
-                                        <button data-toggle="tooltip"  href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
+                                 {/*    <td>
+                                        <button data-toggle="tooltip" href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
                                             className="btn btn-info"
                                             data-bs-toggle="collapse"
                                             data-bs-target={`#textoColapsado-${item.id}espera`}
                                             onClick={() => {
-                                                if (textoColapsadoVisible === item.id) {
-                                                  // Si la orden está activa, ciérrala al hacer clic nuevamente
-                                                  setTextoColapsadoVisible(null);
+                                                if (colapsosVisibles[item.id]) {
+                                                    ocultarTextoColapsado(item.id);
                                                 } else {
-                                                  // Si se hace clic en una nueva orden, cámbiela
-                                                  setTextoColapsadoVisible(item.id);
+                                                    setColapsosVisibles((prevColapsos) => ({ ...prevColapsos, [item.id]: true }));
                                                 }
-                                              }}
+                                            }}
                                         >
                                             Info
                                         </button>
-                                        <div id={`textoColapsado-${item.id}espera`} className={`collapse position-absolute bg-white card p-2 ${textoColapsadoVisible === item.id ? 'show' : ''}`}  >
+                                        <div id={`textoColapsado-${item.id}espera`} className={`collapse position-absolute bg-white card p-2 ${colapsosVisibles[item.id] ? 'show' : ''}`} >
                                             {item.datosCambiosEstado ? item.datosCambiosEstado.map((e, id) => (
                                                 <p key={id}>- {e.estado} - {e.hora} -</p>
-                                        /* console.log(e.value) */)) : '-'}
+                                       )) : '-'}
 
                                         </div>
-                                    </td>
+                                    </td> */}
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
-                                    <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
+                                  {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
 
@@ -494,24 +501,30 @@ export default function Crud({ signingOut }) {
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
-                                    <td>
+                                 {/*    <td>
                                         <button
                                             type="button"
                                             className="btn btn-info"
                                             data-bs-toggle="collapse"
                                             data-bs-target={`#textoColapsado-${item.id}`}
-                                            
+                                            onClick={() => {
+                                                if (colapsosVisibles[item.id]) {
+                                                    ocultarTextoColapsado(item.id);
+                                                } else {
+                                                    setColapsosVisibles((prevColapsos) => ({ ...prevColapsos, [item.id]: true }));
+                                                }
+                                            }}
                                         >
                                             Info
                                         </button>
-                                        <div id={`textoColapsado-${item.id}`} className="collapse position-absolute bg-white card p-2">
-                                        {item.datosCambiosEstado ? item.datosCambiosEstado.map((e, id) => (
+                                        <div id={`textoColapsado-${item.id}`} className={`collapse position-absolute bg-white card p-2 ${colapsosVisibles[item.id] ? 'show' : ''}`}>
+                                            
+                                            {item.datosCambiosEstado ? item.datosCambiosEstado.map((e, id) => (
                                                 <p key={id}>- {e.estado} - {e.hora} - {acortarUsuario(e.usuarioCambioEstado)}</p>
-                                        /* console.log(e.value) */)) : '-'}
+                                            )) : '-'}
                                         </div>
                                     </td>
-
-
+ */}
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
                                     {/* <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}

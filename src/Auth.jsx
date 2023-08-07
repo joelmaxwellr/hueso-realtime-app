@@ -63,7 +63,7 @@ export default function Auth(props) {
               <input className='form-control' type="password" id='password' onKeyDown={handleKeyDown} onChange={(e) => setPassword(e.target.value)} />
             </div>
           
-            <button className='btn btn-success' onClick={signIn}>Iniciar Sesión</button>
+            <button className='btn btn-success'  onClick={signIn}>Iniciar Sesión</button>
            {/*  <button className='btn btn-primary' onClick={create}>Crear cuenta</button> */}
           
 {/* 
@@ -77,7 +77,7 @@ export default function Auth(props) {
       )}
       {logStatus && (
         <div>
-          
+          <a ></a>
           <Crud signingOut={signingOut}/>
         </div>
       )}
