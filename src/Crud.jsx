@@ -5,6 +5,7 @@ import { getDatabase, ref, push, onValue, remove, update } from "firebase/databa
 import style from "./Crud.module.css"
 import { getAuth } from "firebase/auth";
 import Navbar from './NavBar';
+import { PiMotorcycleFill } from "react-icons/pi";
 
 const styleBoot = {
     Espera: 'bg-warning text-white',
@@ -23,6 +24,7 @@ export default function Crud({ signingOut }) {
     const [nombreCliente, setNombreCliente] = useState("")
     const [material, setMaterial] = useState("DTF")
     const [nota, setnota] = useState("")
+    const [checkEnvio, setCheckEnvio] = useState(false)
     const [precio, setPrecio] = useState(0)
     const [data, setData] = useState([])
     const [fecha, setFecha] = useState("")
@@ -54,17 +56,20 @@ export default function Crud({ signingOut }) {
 
     const db = getDatabase()
 
-    const limpiarCampos = (e) => {
+    const limpiarCampos = () => {
+
         setNombreCliente("");
         setMaterial("");
         setPrecio(0);
         setnota("");
         setMaterial("DTF")
         setEstadoImpresion({ value: "Espera", className: style["Espera"] })
+        setCheckEnvio(false)
     }
 
 
     const crear = async () => {
+
         const fechaActual = new Date();
         const fechaOrdens = fechaActual.getTime();
         const fechaFormateada = fechaActual.toLocaleDateString();
@@ -84,7 +89,8 @@ export default function Crud({ signingOut }) {
                     fechaOrden: fechaOrdens,
                     hora: horaFormateada,
                     estadoImpresion: estadoImpresion,
-                    usuarioActual: usuarioActual
+                    usuarioActual: usuarioActual,
+                    checkEnvio: checkEnvio
                 });
                 console.log("Document written with ID: ");
             } catch (e) {
@@ -123,10 +129,10 @@ export default function Crud({ signingOut }) {
             } else {
                 setData([]);
                 setFilteredData([]);
-                 // Si no hay datos, también limpiar la data filtrada
+                // Si no hay datos, también limpiar la data filtrada
             }
         });
-        
+
     };
 
     const filtroData = (busqueda) => {
@@ -165,8 +171,10 @@ export default function Crud({ signingOut }) {
         setData(resultadosBusqueda);
     }
 
+
+
     useEffect(() => {
-        
+
 
 
         fetchData();
@@ -208,6 +216,7 @@ export default function Crud({ signingOut }) {
         setMaterial(item.material);
         setPrecio(item.precio);
         setnota(item.nota);
+        setCheckEnvio(item.checkEnvio)
         setEstadoImpresion({ value: item.estadoImpresion.value, className: item.estadoImpresion.className })
         setActualizando(true);
         setClienteActualizando(item);
@@ -223,7 +232,7 @@ export default function Crud({ signingOut }) {
         const fechaOrdens = fechaActual.getTime();
         const fechaFormateada = fechaActual.toLocaleDateString();
         const horaFormateada = fechaActual.toLocaleTimeString();
-    
+
         const nuevoCambioEstado = {
             estado: clienteActualizando.estadoImpresion.value,
             usuarioCambioEstado: usuarioActual,
@@ -231,13 +240,13 @@ export default function Crud({ signingOut }) {
             fecha: fechaFormateada,
             hora: horaFormateada
         };
-    
+
         // Copiar los cambios de estado acumulados en una variable temporal
         const cambiosEstadoTemp = [...cambiosEstado, nuevoCambioEstado];
-    
+
         try {
             const dbRef = ref(db, `ordenes/${clienteActualizando.id}`);
-    
+
             await update(dbRef, {
                 nombreCliente: nombreCliente,
                 material: material,
@@ -247,23 +256,24 @@ export default function Crud({ signingOut }) {
                 fechaOrden: fechaOrdens,
                 hora: clienteActualizando.hora,
                 estadoImpresion: estadoImpresion,
+                checkEnvio: checkEnvio
                 /* datosCambiosEstado: cambiosEstadoTemp,  */// Usar los cambios acumulados en la actualización
             });
             console.log("Document successfully updated!");
         } catch (e) {
             console.error("Error updating document: ", e);
         }
-    
+
         // Actualizar el estado con los cambios acumulados
         setCambiosEstado(cambiosEstadoTemp);
-    
+
         setActualizando(false);
         limpiarCampos();
         fetchData();
         setMostrarBoton(false);
     };
-    
-    
+
+
 
 
     const cancelar = () => {
@@ -333,7 +343,7 @@ export default function Crud({ signingOut }) {
     if (usuarioActual == "joelmaxwellr@gmail.com") {
         sumaData(data)
     }
-
+  
     return (
         <div>
             <div style={{ height: "90px" }}></div>
@@ -365,7 +375,7 @@ export default function Crud({ signingOut }) {
                         className={estadoImpresion.className ? estadoImpresion.className : undefined}
                         id="estadoImpresion"
                         value={estadoImpresion.value}
-                        onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value.replace(/\s+/g, '')}`] })}>
+                        onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
                         <option value="Espera" className={style.Espera}>Espera</option>
                         <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
                         <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
@@ -373,9 +383,20 @@ export default function Crud({ signingOut }) {
                         <option value="Imprimiendo" className={style.Imprimiendo}>Imprimiendo</option>
                         <option value="Listo" className={style.Listo}>Listo</option>
                         <option value="Entregado" className={style.Entregado}>Entregado</option>
-                        <option value="Para Envío" className={style.ParaEnvío}>Para Envío</option>
+                        {/* <option value="Para Envío" className={style.ParaEnvío}>Para Envío</option> */}
                     </select>
-                    <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
+                    {/*  <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} /> */}
+                    
+                    
+                        <div className='p-2'>
+                            Para Envío 
+                        </div> 
+                    <div className="input-group-text ">
+                        <div className='input-group-prepend'>
+
+                            <input className='' type="checkbox" id='checkEnvio' checked={checkEnvio} onChange={(e) => setCheckEnvio(e.target.checked)} />
+                        </div>
+                    </div>
                     <input className='form-control' type="text" id='buscador' placeholder='Buscar cliente' value={busqueda}
                         onChange={(e) => {
                             setBusqueda(e.target.value)
@@ -402,11 +423,12 @@ export default function Crud({ signingOut }) {
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
-                           {/*  <th scope="col">Nota</th> */}
+                            {/*  <th scope="col">Nota</th> */}
                             <th scope="col">Estatus</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Hora</th>
                             <th scope="col">Usuario</th>
+                            <th scope="col">Para Envío</th>
                             <th scope="col">Acciones</th>
                             <th scope="col"></th>
 
@@ -431,7 +453,15 @@ export default function Crud({ signingOut }) {
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
-                                 {/*    <td>
+
+                                    <td>
+                                        {item.checkEnvio === true ?
+                                        <PiMotorcycleFill
+                                            style={{ padding: '6px', borderRadius: '8px' }}
+                                            className={style.ParaEnvío} size={40} />
+                                        : '-'}
+                                    </td>
+                                    {/*    <td>
                                         <button data-toggle="tooltip" href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
                                             className="btn btn-info"
                                             data-bs-toggle="collapse"
@@ -456,7 +486,7 @@ export default function Crud({ signingOut }) {
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
-                                  {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
+                                    <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
 
@@ -465,7 +495,7 @@ export default function Crud({ signingOut }) {
                             ))
 
                         }
-                        
+
                     </tbody>
 
                 </table>
@@ -508,7 +538,7 @@ export default function Crud({ signingOut }) {
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
-                                  {/*   <td>
+                                    {/*   <td>
                                         <button
                                             type="button"
                                             className="btn btn-info"
@@ -534,7 +564,7 @@ export default function Crud({ signingOut }) {
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
-                                  {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
+                                    {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
 
                                     {/* <td>
