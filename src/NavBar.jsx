@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {AiFillHome} from "react-icons/ai";
 
 const Navbar = ({ setNavbarActive, signingOut, setActiveTab, activeTab }) => {
 
@@ -13,7 +14,7 @@ const Navbar = ({ setNavbarActive, signingOut, setActiveTab, activeTab }) => {
         <div>
             <ul className="nav nav-tabs p-1">
             <li onClick={() => handleTabClick("Principal")} className={`nav-item ${activeTab === "Principal" ? "active" : ""}`}>
-                    <a className={`nav-link ${activeTab === "Principal" ? "active" : ""}`} aria-current="page" href="#">Ordenes Principal</a>
+                    <a className={`nav-link ${activeTab === "Principal" ? "active" : ""}`} aria-current="page" href="#"><AiFillHome/> Ordenes Principal </a>
                 </li>
 
                 <li onClick={() => handleTabClick("DTF")} className={`nav-item ${activeTab === "DTF" ? "active" : ""}`}>

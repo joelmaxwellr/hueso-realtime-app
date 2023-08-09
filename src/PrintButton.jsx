@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from 'react';
+import { PiPrinterLight} from "react-icons/pi";
+import { MdLocalPrintshop} from "react-icons/md";
 
 
 const PrintButton = ({ objeto, mostrarBoton, separator}) => {
@@ -210,7 +212,7 @@ const PrintButton = ({ objeto, mostrarBoton, separator}) => {
         handlePrint(objeto)
         handleImprimirClick(objeto)
 
-      }} disabled={mostrarBoton}>Print</button>
+      }} disabled={mostrarBoton}>Print <MdLocalPrintshop size={20}/></button>
       <div id="print-contents" style={{ display: 'none' }}>
 
 

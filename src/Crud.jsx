@@ -6,6 +6,10 @@ import style from "./Crud.module.css"
 import { getAuth } from "firebase/auth";
 import Navbar from './NavBar';
 import { PiMotorcycleFill } from "react-icons/pi";
+import { MdCreateNewFolder } from "react-icons/md";
+import { GrDocumentUpdate } from "react-icons/gr";
+import { BiSearch } from "react-icons/bi";
+import { GiCancel } from "react-icons/gi";
 
 const styleBoot = {
     Espera: 'bg-warning text-white',
@@ -144,7 +148,7 @@ export default function Crud({ signingOut }) {
 
             setFilteredData(resultado);
         }
-        else if (busqueda === "Para Envío" ) {
+        else if (busqueda === "Para Envío") {
             const resultado = data.filter((Element) => Element.checkEnvio === true);
 
             setFilteredData(resultado);
@@ -348,7 +352,7 @@ export default function Crud({ signingOut }) {
     if (usuarioActual == "joelmaxwellr@gmail.com") {
         sumaData(data)
     }
-  
+
     return (
         <div>
             <div style={{ height: "90px" }}></div>
@@ -391,28 +395,31 @@ export default function Crud({ signingOut }) {
                         {/* <option value="Para Envío" className={style.ParaEnvío}>Para Envío</option> */}
                     </select>
                     {/*  <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} /> */}
-                    
-                    
-                        <div className='p-2'>
-                            Para Envío 
-                        </div> 
+
+
+                    <div className='p-2'>
+                        Para Envío
+                    </div>
                     <div className="input-group-text ">
                         <div className='input-group-prepend'>
 
                             <input className='' type="checkbox" id='checkEnvio' checked={checkEnvio} onChange={(e) => setCheckEnvio(e.target.checked)} />
                         </div>
                     </div>
-                    <input className='form-control' type="text" id='buscador' placeholder='Buscar cliente' value={busqueda}
+                    <input className='form-control' type="text" id='buscador' placeholder="Buscar cliente" value={busqueda}
                         onChange={(e) => {
                             setBusqueda(e.target.value)
                             filtrar(e.target.value)
                         }} />
+                    <span className="input-group-text">
+                        <BiSearch/>
+                    </span>
                 </div>
                 <div >
 
-                    {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear</button>  </div>
-                        : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización</button>
-                            <button className='btn btn-danger' onClick={cancelar}>Cancelar</button></div>}
+                    {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear <MdCreateNewFolder size={25} /></button>  </div>
+                        : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización <GrDocumentUpdate size={20}/></button>
+                            <button className='btn btn-danger' onClick={cancelar}>Cancelar <GiCancel size={20}/></button></div>}
                 </div>
 
                 <Navbar setNavbarActive={setNavbarActive} signingOut={signingOut} setActiveTab={setActiveTab} activeTab={activeTab} />
@@ -461,10 +468,10 @@ export default function Crud({ signingOut }) {
 
                                     <td>
                                         {item.checkEnvio === true ?
-                                        <PiMotorcycleFill
-                                            style={{ padding: '6px', borderRadius: '8px' }}
-                                            className={style.ParaEnvío} size={40} />
-                                        : '-'}
+                                            <PiMotorcycleFill
+                                                style={{ padding: '6px', borderRadius: '8px' }}
+                                                className={style.ParaEnvío} size={40} />
+                                            : '-'}
                                     </td>
                                     {/*    <td>
                                         <button data-toggle="tooltip" href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
@@ -491,8 +498,8 @@ export default function Crud({ signingOut }) {
 
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
-                                   {/*  <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
-                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
+                                    {/*  <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
+                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar <GrDocumentUpdate size={20}/></button></td>
 
 
                                     {/* <td>{item.estatus}</td> */}
@@ -546,10 +553,10 @@ export default function Crud({ signingOut }) {
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
                                     <td>
                                         {item.checkEnvio === true ?
-                                        <PiMotorcycleFill
-                                            style={{ padding: '6px', borderRadius: '8px' }}
-                                            className={style.ParaEnvío} size={40} />
-                                        : '-'}
+                                            <PiMotorcycleFill
+                                                style={{ padding: '6px', borderRadius: '8px' }}
+                                                className={style.ParaEnvío} size={40} />
+                                            : '-'}
                                     </td>
                                     {/*   <td>
                                         <button
@@ -578,7 +585,7 @@ export default function Crud({ signingOut }) {
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
                                     {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
-                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar</button></td>
+                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar <GrDocumentUpdate size={20}/></button></td>
 
                                     {/* <td>
                                         <button
