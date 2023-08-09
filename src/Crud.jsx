@@ -144,6 +144,11 @@ export default function Crud({ signingOut }) {
 
             setFilteredData(resultado);
         }
+        else if (busqueda === "Para Envío" ) {
+            const resultado = data.filter((Element) => Element.checkEnvio === true);
+
+            setFilteredData(resultado);
+        }
         else {
             const resultado = data.filter((Element) => Element.material == busqueda || Element.estadoImpresion.value == busqueda);
             setFilteredData(resultado);
@@ -512,6 +517,7 @@ export default function Crud({ signingOut }) {
                             <th scope="col">Fecha</th>
                             <th scope="col">Hora</th>
                             <th scope="col">Usuario</th>
+                            <th scope="col">Para Envío</th>
                             <th scope="col">Acciones</th>
                             <th scope="col"></th>
 
@@ -520,9 +526,9 @@ export default function Crud({ signingOut }) {
                     <tbody>
 
                         {
-                            data.length == 0 ? (
+                            filteredData.length == 0 ? (
                                 <tr>
-                                    <td colSpan="10">No hay ordenes de trabajo</td>
+                                    <td colSpan="10">No hay ordenes {navBarActive}</td>
                                 </tr>
                             ) : filteredData.map(item => (
                                 <tr key={item.id} className={colorTabla}>
@@ -538,6 +544,13 @@ export default function Crud({ signingOut }) {
                                     <td className={colorTabla} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
+                                    <td>
+                                        {item.checkEnvio === true ?
+                                        <PiMotorcycleFill
+                                            style={{ padding: '6px', borderRadius: '8px' }}
+                                            className={style.ParaEnvío} size={40} />
+                                        : '-'}
+                                    </td>
                                     {/*   <td>
                                         <button
                                             type="button"
