@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useRef } from 'react'
+import React, { useState, useEffect, createContext, useRef, useContext } from 'react'
 import { set } from 'firebase/database';
 import PrintButton from './PrintButton';
 import { getDatabase, ref, push, onValue, remove, update } from "firebase/database";
@@ -10,6 +10,9 @@ import { MdCreateNewFolder } from "react-icons/md";
 import { GrDocumentUpdate } from "react-icons/gr";
 import { BiSearch } from "react-icons/bi";
 import { GiCancel } from "react-icons/gi";
+import CampoClienteAutocomplete from './CampoClienteAutocomplete'
+import DataOrdenesContext from './DataOrdenesContext';
+
 
 const styleBoot = {
     Espera: 'bg-warning text-white',
@@ -24,11 +27,13 @@ const styleBoot = {
 
 
 export default function Crud({ signingOut }) {
+    const {nombreCliente, setNombreCliente} = useContext(DataOrdenesContext)
     const [usuarioActual, setUsuarioActual] = useState("")
-    const [nombreCliente, setNombreCliente] = useState("")
+    /* const [nombreCliente, setNombreCliente] = useState('') */
     const [material, setMaterial] = useState("DTF")
     const [nota, setnota] = useState("")
     const [checkEnvio, setCheckEnvio] = useState(false)
+    const [checkSeleccion, setCheckSeleccion] = useState(true)
     const [precio, setPrecio] = useState(0)
     const [data, setData] = useState([])
     const [fecha, setFecha] = useState("")
@@ -48,6 +53,7 @@ export default function Crud({ signingOut }) {
     const [activeTab, setActiveTab] = useState("Principal");
     const [textoColapsadoVisible, setTextoColapsadoVisible] = useState(null);
     const [colapsosVisibles, setColapsosVisibles] = useState({});
+    const [grupoCambioEstado, setGrupoCambioEstado] = useState([]);
 
     // Función para ocultar el contenido colapsado
 
@@ -148,8 +154,8 @@ export default function Crud({ signingOut }) {
 
             setFilteredData(resultado);
         }
-        else if (busqueda === "Para Envío") {
-            const resultado = data.filter((Element) => Element.checkEnvio === true);
+        else if (/* busqueda === "Para Envío" || */ busqueda === "ParaEnvío") {
+            const resultado = data.filter((Element) => Element.checkEnvio === true || Element.estadoImpresion.value == busqueda);
 
             setFilteredData(resultado);
         }
@@ -353,6 +359,8 @@ export default function Crud({ signingOut }) {
         sumaData(data)
     }
 
+
+
     return (
         <div>
             <div style={{ height: "90px" }}></div>
@@ -365,8 +373,8 @@ export default function Crud({ signingOut }) {
 
 
                 <div className='input-group mb-3 container-fluid'>
-
-                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} /* ref={clienteInputRef} */ onChange={(e) => setNombreCliente(e.target.value)} />
+                    {/* <CampoClienteAutocomplete filteredData={filteredData} nombreCliente={nombreCliente} setNombreCliente={setNombreCliente}/> */}
+                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente}  onChange={(e) => setNombreCliente(e.target.value)} />
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
@@ -392,7 +400,7 @@ export default function Crud({ signingOut }) {
                         <option value="Imprimiendo" className={style.Imprimiendo}>Imprimiendo</option>
                         <option value="Listo" className={style.Listo}>Listo</option>
                         <option value="Entregado" className={style.Entregado}>Entregado</option>
-                        {/* <option value="Para Envío" className={style.ParaEnvío}>Para Envío</option> */}
+                        <option value="ParaEnvío" className={style.ParaEnvío}>Para Envío</option>
                     </select>
                     {/*  <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} /> */}
 
@@ -412,14 +420,14 @@ export default function Crud({ signingOut }) {
                             filtrar(e.target.value)
                         }} />
                     <span className="input-group-text">
-                        <BiSearch/>
+                        <BiSearch />
                     </span>
                 </div>
                 <div >
 
                     {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear <MdCreateNewFolder size={25} /></button>  </div>
-                        : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización <GrDocumentUpdate size={20}/></button>
-                            <button className='btn btn-danger' onClick={cancelar}>Cancelar <GiCancel size={20}/></button></div>}
+                        : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización <GrDocumentUpdate size={20} /></button>
+                            <button className='btn btn-danger' onClick={cancelar}>Cancelar <GiCancel size={20} /></button></div>}
                 </div>
 
                 <Navbar setNavbarActive={setNavbarActive} signingOut={signingOut} setActiveTab={setActiveTab} activeTab={activeTab} />
@@ -432,6 +440,7 @@ export default function Crud({ signingOut }) {
                     <thead>
                         <tr>
 
+                            <th scope="col">#</th>
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
@@ -457,6 +466,12 @@ export default function Crud({ signingOut }) {
                                 <tr key={item.id} className={colorTabla}>
 
                                     {/*   <th scope="row">{item.orden}</th> */}
+                                    <th scope="row"> <div className='input-group-prepend'>
+
+                                       {/*  <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
+                                        {/*   {checkSeleccion===true ? console.log :a} */}
+                                    </div>
+                                    </th>
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
                                     <td className="text-right"><label>RD$</label> {separator(item.precio)}</td>
                                     <td >{item.material}</td>
@@ -499,7 +514,7 @@ export default function Crud({ signingOut }) {
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
                                     {/*  <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
-                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar <GrDocumentUpdate size={17}/></button></td>
+                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar <GrDocumentUpdate size={17} /></button></td>
 
 
                                     {/* <td>{item.estatus}</td> */}
@@ -516,6 +531,7 @@ export default function Crud({ signingOut }) {
                     <thead>
                         <tr>
 
+                            <th scope="col">#</th>
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
@@ -541,6 +557,11 @@ export default function Crud({ signingOut }) {
                                 <tr key={item.id} className={colorTabla}>
 
                                     {/* <th scope="row">{item.orden}</th> */}
+                                    <th scope="row"> <div className='input-group-prepend'>
+
+                                      {/*   <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
+                                    </div>
+                                    </th>
                                     <td className='text-capitalize text-right'>{item.nombreCliente}</td>
                                     <td className='text-left' >RD$ {separator(item.precio)}</td>
 
@@ -585,7 +606,7 @@ export default function Crud({ signingOut }) {
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
                                     {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
-                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar <GrDocumentUpdate size={17}/></button></td>
+                                    <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar <GrDocumentUpdate size={17} /></button></td>
 
                                     {/* <td>
                                         <button

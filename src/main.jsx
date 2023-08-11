@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense,  } from 'react'
 import ReactDOM from 'react-dom/client'
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.min.js"
@@ -31,11 +31,17 @@ import Root from './Root.jsx';
 import Crud from './Crud.jsx';
 import Hola from './Hola.jsx';
 
+
+
+/* const [nombreCliente, setNombreCliente] = useState('') */
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    
+
     <Suspense fallback={"Cargando..."}>
       <RouterProvider router={router} />
     </Suspense>
+    
 
   </React.StrictMode>,
 )
