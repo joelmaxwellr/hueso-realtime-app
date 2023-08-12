@@ -386,6 +386,7 @@ export default function Crud({ signingOut }) {
 
     return (
         <div>
+              <ToastContainer />
             <div style={{ height: "90px" }}></div>
             <h3>
                 {usuarioActual}
@@ -396,9 +397,9 @@ export default function Crud({ signingOut }) {
 
 
                 <div className='input-group mb-3 container-fluid'>
-                    <Complete filteredData={data} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
+                  {/*   <Complete filteredData={data} selectedOption={selectedOption} setSelectedOption={setSelectedOption} /> */}
                     {/* <CampoClienteAutocomplete filteredData={filteredData} nombreCliente={nombreCliente} setNombreCliente={setNombreCliente}/> */}
-                    {/*   <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} /> */}
+                      <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
@@ -504,7 +505,7 @@ export default function Crud({ signingOut }) {
                                     <td >
 
                                         <button className="btn btn-secondary " onClick={() => handleCopyClick(item)}><FaRegCopy size={14} /></button>
-                                        <ToastContainer />
+                                      
                                     </td>
                                     {/* <td>{item.nota}</td> */}
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
