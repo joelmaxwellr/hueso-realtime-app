@@ -396,6 +396,7 @@ export default function Crud({ signingOut }) {
 
 
 
+
                 <div className='input-group mb-3 container-fluid'>
                   {/*   <Complete filteredData={data} selectedOption={selectedOption} setSelectedOption={setSelectedOption} /> */}
                     {/* <CampoClienteAutocomplete filteredData={filteredData} nombreCliente={nombreCliente} setNombreCliente={setNombreCliente}/> */}
