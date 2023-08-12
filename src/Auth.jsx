@@ -2,7 +2,8 @@ import React from 'react';
 import { useState } from 'react';
 import "firebase/auth";
 import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Crud from './Crud.jsx';
 
@@ -26,10 +27,17 @@ export default function Auth(props) {
         const user = userCredential.user;
         console.log(user.email);
         setLogStatus(user);
+        toast.success("Inicio de Sesión Exitoso", {
+          position: toast.POSITION.TOP_CENTER
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        toast.error("Contraseña Incorrecta", {
+          position: toast.POSITION.TOP_CENTER
+        });
+
       });
   };
 
@@ -41,32 +49,33 @@ export default function Auth(props) {
     });
   };
 
-  
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       signIn();
     }
-};
+  };
 
   return (
-    <div className='container mx-auto m-5 p-5'  style={{'height':'50%'}}>
+    <div className='container mx-auto  m-5 p-5'  >
+      <ToastContainer />
       {!logStatus && (
-        <div className=''>
-          
-            <div className="mb-3">
-              <label htmlFor="email">Correo electronico</label>
-              <input className='form-control' type="email" id='email' onChange={(e) => setEmail(e.target.value)} />
+        <div className='container mx-auto  m-5 p-5' style={{ width: '600px', maxWidth: '100%', marginTop: '800px' }}>
+          <h1>Inicio de Sesión</h1>
+          <div className="mb-3">
+            <label htmlFor="email">Correo electronico</label>
+            <input className='form-control' type="email" id='email' onChange={(e) => setEmail(e.target.value)} />
 
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password">Contraseña</label>
-              <input className='form-control' type="password" id='password' onKeyDown={handleKeyDown} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-          
-            <button className='btn btn-success'  onClick={signIn}>Iniciar Sesión</button>
-           {/*  <button className='btn btn-primary' onClick={create}>Crear cuenta</button> */}
-          
-{/* 
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password">Contraseña</label>
+            <input className='form-control' type="password" id='password' onKeyDown={handleKeyDown} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+
+          <button className='btn btn-success' onClick={signIn}>Iniciar Sesión</button>
+          {/*  <button className='btn btn-primary' onClick={create}>Crear cuenta</button> */}
+
+          {/* 
           <label htmlFor="email">Correo electronico</label>
           <input type="email" id='email' onChange={(e) => setEmail(e.target.value)} />
           <label htmlFor="password">Contraseña</label>
@@ -78,7 +87,7 @@ export default function Auth(props) {
       {logStatus && (
         <div>
           <a ></a>
-          <Crud signingOut={signingOut}/>
+          <Crud signingOut={signingOut} />
         </div>
       )}
     </div>

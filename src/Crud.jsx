@@ -10,8 +10,13 @@ import { MdCreateNewFolder } from "react-icons/md";
 import { GrDocumentUpdate } from "react-icons/gr";
 import { BiSearch } from "react-icons/bi";
 import { GiCancel } from "react-icons/gi";
+import { FaRegCopy } from "react-icons/fa";
 import CampoClienteAutocomplete from './CampoClienteAutocomplete'
 import DataOrdenesContext from './DataOrdenesContext';
+
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Complete from './Complete';
 
 
 const styleBoot = {
@@ -27,7 +32,7 @@ const styleBoot = {
 
 
 export default function Crud({ signingOut }) {
-    const {nombreCliente, setNombreCliente} = useContext(DataOrdenesContext)
+    const { nombreCliente, setNombreCliente } = useContext(DataOrdenesContext)
     const [usuarioActual, setUsuarioActual] = useState("")
     /* const [nombreCliente, setNombreCliente] = useState('') */
     const [material, setMaterial] = useState("DTF")
@@ -54,6 +59,7 @@ export default function Crud({ signingOut }) {
     const [textoColapsadoVisible, setTextoColapsadoVisible] = useState(null);
     const [colapsosVisibles, setColapsosVisibles] = useState({});
     const [grupoCambioEstado, setGrupoCambioEstado] = useState([]);
+    const [selectedOption, setSelectedOption] = useState(null);
 
     // Función para ocultar el contenido colapsado
 
@@ -67,7 +73,7 @@ export default function Crud({ signingOut }) {
     const db = getDatabase()
 
     const limpiarCampos = () => {
-
+        setSelectedOption(null)
         setNombreCliente("");
         setMaterial("");
         setPrecio(0);
@@ -225,9 +231,11 @@ export default function Crud({ signingOut }) {
         }
         fetchData();
     }
+
     const actualizar = (item) => {
 
         setNombreCliente(item.nombreCliente);
+        setSelectedOption({ label: item.nombreCliente, value: item.nombreCliente });
         setMaterial(item.material);
         setPrecio(item.precio);
         setnota(item.nota);
@@ -361,6 +369,21 @@ export default function Crud({ signingOut }) {
 
 
 
+    const handleCopyClick = (item) => {
+        const textToCopy = `${item.nombreCliente} - RD$${item.precio} - ${item.material}`;
+
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                console.log('Texto copiado: ', textToCopy);
+                toast.success(`Texto copiado correctamente ${item.nombreCliente} `);
+            })
+            .catch((error) => {
+                console.error('Error al copiar: ', error);
+                toast.error('Error al copiar el texto');
+            });
+    };
+
+
     return (
         <div>
             <div style={{ height: "90px" }}></div>
@@ -373,8 +396,9 @@ export default function Crud({ signingOut }) {
 
 
                 <div className='input-group mb-3 container-fluid'>
+                    <Complete filteredData={data} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
                     {/* <CampoClienteAutocomplete filteredData={filteredData} nombreCliente={nombreCliente} setNombreCliente={setNombreCliente}/> */}
-                    <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente}  onChange={(e) => setNombreCliente(e.target.value)} />
+                    {/*   <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} /> */}
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
@@ -392,15 +416,15 @@ export default function Crud({ signingOut }) {
                         className={estadoImpresion.className ? estadoImpresion.className : undefined}
                         id="estadoImpresion"
                         value={estadoImpresion.value}
-                        onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] })}>
-                        <option value="Espera" className={style.Espera}>Espera</option>
-                        <option value="Aprobado" className={style.Aprobado}>Aprobado</option>
-                        <option value="Cancelado" className={style.Cancelado}>Cancelado</option>
-                        <option value="Detenido" className={style.Detenido}>Detenido</option>
-                        <option value="Imprimiendo" className={style.Imprimiendo}>Imprimiendo</option>
-                        <option value="Listo" className={style.Listo}>Listo</option>
-                        <option value="Entregado" className={style.Entregado}>Entregado</option>
-                        <option value="ParaEnvío" className={style.ParaEnvío}>Para Envío</option>
+                        onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] ? style[`${e.target.value}`] : undefined })}>
+                        <option value="Espera" className={style.Espera ? style.Espera : undefined}>Espera</option>
+                        <option value="Aprobado" className={style.Aprobado ? style.Aprobado : undefined}>Aprobado</option>
+                        <option value="Cancelado" className={style.Cancelado ? style.Cancelado : undefined}>Cancelado</option>
+                        <option value="Detenido" className={style.Detenido ? style.Cancelado : undefined}>Detenido</option>
+                        <option value="Imprimiendo" className={style.Imprimiendo ? style.Cancelado : undefined}>Imprimiendo</option>
+                        <option value="Listo" className={style.Listo ? style.Cancelado : undefined}>Listo</option>
+                        <option value="Entregado" className={style.Entregado ? style.Cancelado : undefined}>Entregado</option>
+                        <option value="ParaEnvío" className={style.ParaEnvío ? style.Cancelado : undefined}>Para Envío</option>
                     </select>
                     {/*  <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} /> */}
 
@@ -444,6 +468,7 @@ export default function Crud({ signingOut }) {
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
+                            <th scope="col"></th>
                             {/*  <th scope="col">Nota</th> */}
                             <th scope="col">Estatus</th>
                             <th scope="col">Fecha</th>
@@ -463,21 +488,27 @@ export default function Crud({ signingOut }) {
                                     <td colSpan="10">No hay ordenes En Espera</td>
                                 </tr>
                             ) : filtroEspera.map(item => (
-                                <tr key={item.id} className={colorTabla}>
+                                <tr key={item.id} className={colorTabla ? colorTabla : undefined}>
 
                                     {/*   <th scope="row">{item.orden}</th> */}
                                     <th scope="row"> <div className='input-group-prepend'>
 
-                                       {/*  <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
+                                        {/*  <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
                                         {/*   {checkSeleccion===true ? console.log :a} */}
                                     </div>
                                     </th>
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
                                     <td className="text-right"><label>RD$</label> {separator(item.precio)}</td>
                                     <td >{item.material}</td>
+
+                                    <td >
+
+                                        <button className="btn btn-secondary " onClick={() => handleCopyClick(item)}><FaRegCopy size={14} /></button>
+                                        <ToastContainer />
+                                    </td>
                                     {/* <td>{item.nota}</td> */}
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
-                                    <td className={colorTabla} >{item.fecha}</td>
+                                    <td className={colorTabla ? colorTabla : undefined} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
 
@@ -485,7 +516,7 @@ export default function Crud({ signingOut }) {
                                         {item.checkEnvio === true ?
                                             <PiMotorcycleFill
                                                 style={{ padding: '6px', borderRadius: '8px' }}
-                                                className={style.ParaEnvío} size={40} />
+                                                className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
                                             : '-'}
                                     </td>
                                     {/*    <td>
@@ -535,6 +566,7 @@ export default function Crud({ signingOut }) {
                             <th scope="col">Cliente</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Material</th>
+                            <th scope="col"></th>
                             {/*  <th scope="col">Nota</th> */}
                             <th scope="col">Estatus</th>
                             <th scope="col">Fecha</th>
@@ -554,12 +586,12 @@ export default function Crud({ signingOut }) {
                                     <td colSpan="10">No hay ordenes {navBarActive}</td>
                                 </tr>
                             ) : filteredData.map(item => (
-                                <tr key={item.id} className={colorTabla}>
+                                <tr key={item.id} className={colorTabla ? colorTabla: undefined}>
 
                                     {/* <th scope="row">{item.orden}</th> */}
                                     <th scope="row"> <div className='input-group-prepend'>
 
-                                      {/*   <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
+                                        {/*   <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
                                     </div>
                                     </th>
                                     <td className='text-capitalize text-right'>{item.nombreCliente}</td>
@@ -567,16 +599,21 @@ export default function Crud({ signingOut }) {
 
 
                                     <td >{item.material}</td>
+
+                                    <td >
+
+                                        <button className="btn btn-secondary " onClick={() => handleCopyClick(item)}><FaRegCopy size={14} /></button>
+                                        <ToastContainer /></td>
                                     {/* <td>{item.nota}</td> */}
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
-                                    <td className={colorTabla} >{item.fecha}</td>
+                                    <td className={colorTabla ? colorTabla: undefined} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
                                     <td>
                                         {item.checkEnvio === true ?
                                             <PiMotorcycleFill
                                                 style={{ padding: '6px', borderRadius: '8px' }}
-                                                className={style.ParaEnvío} size={40} />
+                                                className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
                                             : '-'}
                                     </td>
                                     {/*   <td>
