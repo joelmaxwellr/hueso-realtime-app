@@ -422,11 +422,11 @@ export default function Crud({ signingOut }) {
                         <option value="Espera" className={style.Espera ? style.Espera : undefined}>Espera</option>
                         <option value="Aprobado" className={style.Aprobado ? style.Aprobado : undefined}>Aprobado</option>
                         <option value="Cancelado" className={style.Cancelado ? style.Cancelado : undefined}>Cancelado</option>
-                        <option value="Detenido" className={style.Detenido ? style.Cancelado : undefined}>Detenido</option>
-                        <option value="Imprimiendo" className={style.Imprimiendo ? style.Cancelado : undefined}>Imprimiendo</option>
-                        <option value="Listo" className={style.Listo ? style.Cancelado : undefined}>Listo</option>
-                        <option value="Entregado" className={style.Entregado ? style.Cancelado : undefined}>Entregado</option>
-                        <option value="ParaEnvío" className={style.ParaEnvío ? style.Cancelado : undefined}>Para Envío</option>
+                        <option value="Detenido" className={style.Detenido ? style.Detenido : undefined}>Detenido</option>
+                        <option value="Imprimiendo" className={style.Imprimiendo ? style.Imprimiendo : undefined}>Imprimiendo</option>
+                        <option value="Listo" className={style.Listo ? style.Listo : undefined}>Listo</option>
+                        <option value="Entregado" className={style.Entregado ? style.Entregado : undefined}>Entregado</option>
+                        <option value="ParaEnvío" className={style.ParaEnvío ? style.ParaEnvío : undefined}>Para Envío</option>
                     </select>
                     {/*  <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} /> */}
 
