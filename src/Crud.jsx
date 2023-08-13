@@ -398,9 +398,9 @@ export default function Crud({ signingOut }) {
 
 
                 <div className='input-group mb-3 container-fluid'>
-                  {/*   <Complete filteredData={data} selectedOption={selectedOption} setSelectedOption={setSelectedOption} /> */}
+                   {/*  <Complete filteredData={data} selectedOption={selectedOption} setSelectedOption={setSelectedOption} /> */}
                     {/* <CampoClienteAutocomplete filteredData={filteredData} nombreCliente={nombreCliente} setNombreCliente={setNombreCliente}/> */}
-                      <input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />
+                      {<input className='form-control validate' type="text" id="validationCustom03" required placeholder='cliente' value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} />}
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
@@ -413,6 +413,7 @@ export default function Crud({ signingOut }) {
                         <option value="UV">UV</option>
                         <option value="Sublimación">Sublimación</option>
                         <option value="Impresión Directa">Impresion Directa</option>
+                        <option value="Otros">Otros</option>
                     </select>
                     <select name="estadoImpresion"
                         className={estadoImpresion.className ? estadoImpresion.className : undefined}
@@ -427,6 +428,7 @@ export default function Crud({ signingOut }) {
                         <option value="Listo" className={style.Listo ? style.Listo : undefined}>Listo</option>
                         <option value="Entregado" className={style.Entregado ? style.Entregado : undefined}>Entregado</option>
                         <option value="ParaEnvío" className={style.ParaEnvío ? style.ParaEnvío : undefined}>Para Envío</option>
+                       {/*  <option value="Otros" className={style.Otros ? style.Otros : undefined}>Otros</option> */}
                     </select>
                     {/*  <input className='form-control' type="text" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} /> */}
 

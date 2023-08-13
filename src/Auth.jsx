@@ -63,7 +63,7 @@ export default function Auth(props) {
         <div className='container mx-auto  m-5 p-5' style={{ width: '600px', maxWidth: '100%', marginTop: '800px' }}>
           <h1>Inicio de Sesión</h1>
           <div className="mb-3">
-            <label htmlFor="email">Correo electronico</label>
+            <label htmlFor="email">Correo electrónico</label>
             <input className='form-control' type="email" id='email' onChange={(e) => setEmail(e.target.value)} />
 
           </div>

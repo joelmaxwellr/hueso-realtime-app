@@ -44,11 +44,11 @@ const Navbar = ({ setNavbarActive, signingOut, setActiveTab, activeTab }) => {
                 <li onClick={() => handleTabClick("Listo")} className={`nav-item ${activeTab === "Listo" ? "active" : ""}`}>
                     <a className={`nav-link ${activeTab === "Listo" ? "active" : ""}`} href="#">Listo</a>
                 </li>
-                {/* <li onClick={() => handleTabClick("Para Envío")} className={`nav-item ${activeTab === "Para Envío" ? "active" : ""}`}>
+                {<li onClick={() => handleTabClick("Otros")} className={`nav-item ${activeTab === "Otros" ? "active" : ""}`}>
                     <a className={`nav-link ${activeTab === "Para Envío" ? "active" : ""}`} href="#">Para Envío</a>
-                </li> */}
-                <li onClick={() => handleTabClick("ParaEnvío")} className={`nav-item ${activeTab === "Para Envío" ? "active" : ""}`}>
-                    <a className={`nav-link ${activeTab === "Para Envío" ? "active" : ""}`} href="#">Para Envío</a>
+                </li>}
+                <li onClick={() => handleTabClick("Otros")} className={`nav-item ${activeTab === "Otros" ? "active" : ""}`}>
+                    <a className={`nav-link ${activeTab === "Otros" ? "active" : ""}`} href="#">Otros</a>
                 </li>
               
 
