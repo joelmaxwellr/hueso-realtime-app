@@ -585,6 +585,7 @@ export default function Crud({ signingOut }) {
                                             animationType='slide'
                                             transparent
                                         >
+                                            
                                             {selectedItem && (
                                                 <div className='card-body'>
                                                     <h4 class="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
