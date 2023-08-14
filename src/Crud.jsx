@@ -387,11 +387,11 @@ export default function Crud({ signingOut }) {
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 console.log('Texto copiado: ', textToCopy);
-                toast.success(`Texto copiado correctamente ${item.nombreCliente} `);
+               /*  toast.success(`Texto copiado correctamente ${item.nombreCliente} `); */
             })
             .catch((error) => {
                 console.error('Error al copiar: ', error);
-                toast.error('Error al copiar el texto');
+               /*  toast.error('Error al copiar el texto'); */
             });
     };
 
