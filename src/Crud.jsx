@@ -11,6 +11,7 @@ import { GrDocumentUpdate } from "react-icons/gr";
 import { BiSearch } from "react-icons/bi";
 import { GiCancel } from "react-icons/gi";
 import { FaRegCopy } from "react-icons/fa";
+import { HiOutlineAnnotation } from "react-icons/hi";
 import CampoClienteAutocomplete from './CampoClienteAutocomplete'
 import DataOrdenesContext from './DataOrdenesContext';
 
@@ -415,11 +416,10 @@ export default function Crud({ signingOut }) {
         <div>
             <ToastContainer />
             <div style={{ height: "90px" }}></div>
-            <h3>
+            <h3 className='container'>
                 {usuarioActual}
             </h3>
             <div className='container fixed-top navbar-expand-lg bg-white p-3'>
-
 
 
 
@@ -494,7 +494,7 @@ export default function Crud({ signingOut }) {
             <div>
 
 
-                <h5>Ordenes En Espera</h5>
+                <h5 className='container'>Ordenes En Espera</h5>
                 <table className="table mx-auto m-5" >
                     <thead>
                         <tr>
@@ -553,7 +553,9 @@ export default function Crud({ signingOut }) {
                                             <PiMotorcycleFill
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
-                                            : '-'}
+                                            : ''}
+                                            {item.nota &&
+                                            <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20}/></button>}
                                     </td>
                                     {/*   <td>
                                         <button data-toggle="tooltip" href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
@@ -575,9 +577,8 @@ export default function Crud({ signingOut }) {
 
                                         </div>
                                     </td> */}
-                                    <td>
-                                        {item.nota &&
-                                            <button className="btn btn-info" onClick={() => openModal(item)}>Nota</button>}
+                                   
+                                        
                                         <Modal
                                             isOpen={modalIsOpen}
                                             onRequestClose={closeModal}
@@ -589,13 +590,13 @@ export default function Crud({ signingOut }) {
 
                                             {selectedItem && (
                                                 <div className='card-body'>
-                                                    <h4 class="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
+                                                    <h4 className="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
                                                     <br />
                                 
                                                     <div className='list-group'>
 
                                                    {/*  <p class="card-text text-capitalize ">Nota</p> */}
-                                                    <p class="card-text text-capitalize text-center">{selectedItem.nota}</p>
+                                                    <p className="card-text text-capitalize text-center">{selectedItem.nota}</p>
                                                     <button className="btn btn-danger text-center" onClick={closeModal}>Cerrar</button>
                                                     </div>
                                                 </div>
@@ -603,7 +604,7 @@ export default function Crud({ signingOut }) {
 
 
                                         </Modal>
-                                    </td>
+                                    
                                     {/*    <td>
                                         <button data-toggle="tooltip" href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
                                             className="btn btn-info"
@@ -642,7 +643,7 @@ export default function Crud({ signingOut }) {
                     </tbody>
 
                 </table>
-                <h5>Ordenes {activeTab}</h5>
+                <h5 className='container'>Ordenes {activeTab}</h5>
                 <table className="table mx-auto m-5">
                     <thead>
                         <tr>
@@ -699,7 +700,9 @@ export default function Crud({ signingOut }) {
                                             <PiMotorcycleFill
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
-                                            : '-'}
+                                            : ''}
+                                            {item.nota &&
+                                            <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20}/></button>}
                                     </td>
                                     {/*   <td>
                                         <button
@@ -724,12 +727,7 @@ export default function Crud({ signingOut }) {
                                             )) : '-'}
                                         </div>
                                     </td> */}
-                                    <td>
-
-                                    {item.nota &&
-                                        <button className="btn btn-info" onClick={() => openModal(item)}>Nota</button>}
-
-                                    </td>
+                                   
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
                                     {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}

@@ -57,7 +57,7 @@ export default function Auth(props) {
   };
 
   return (
-    <div className='container mx-auto  m-5 p-5'  >
+    <div className='mx-auto  m-5 p-5'  style={{ width: '1500px', maxWidth: '100%', marginTop: '800px' }} >
       <ToastContainer />
       {!logStatus && (
         <div className='container mx-auto  m-5 p-5' style={{ width: '600px', maxWidth: '100%', marginTop: '800px' }}>
