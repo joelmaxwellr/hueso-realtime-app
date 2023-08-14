@@ -170,11 +170,12 @@ export default function Crud({ signingOut }) {
 
             setFilteredData(resultado);
         }
-        else if (/* busqueda === "Para Envío" || */ busqueda === "ParaEnvío") {
+        else if (/* busqueda === "Para Envío" || */ busqueda === "Para Envío") {
             const resultado = data.filter((Element) => Element.checkEnvio === true || Element.estadoImpresion.value == busqueda);
 
             setFilteredData(resultado);
         }
+       
         else {
             const resultado = data.filter((Element) => Element.material == busqueda || Element.estadoImpresion.value == busqueda);
             setFilteredData(resultado);
@@ -585,7 +586,7 @@ export default function Crud({ signingOut }) {
                                             animationType='slide'
                                             transparent
                                         >
-                                            
+
                                             {selectedItem && (
                                                 <div className='card-body'>
                                                     <h4 class="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
