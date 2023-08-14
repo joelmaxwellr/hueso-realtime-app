@@ -481,8 +481,8 @@ export default function Crud({ signingOut }) {
                     </span>
                 </div>
                 <div >
-                    {material === "Otros" ? <textarea className='form-control m-3' type="search" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
-                        : " "}
+                    {material&& <textarea className='form-control m-3' type="search" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
+                       /*  : " " */}
 
                     {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear <MdCreateNewFolder size={25} /></button>  </div>
                         : <div className='d-grid gap-2'><button className='btn btn-primary' onClick={guardarActualizacion}>Guardar Actualización <GrDocumentUpdate size={20} /></button>
@@ -704,6 +704,33 @@ export default function Crud({ signingOut }) {
                                             {item.nota &&
                                             <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20}/></button>}
                                     </td>
+
+                                      
+                                        <Modal
+                                            isOpen={modalIsOpen}
+                                            onRequestClose={closeModal}
+                                            contentLabel="Ejemplo Modal"
+                                            style={customStyles}
+                                            animationType='slide'
+                                            transparent
+                                        >
+
+                                            {selectedItem && (
+                                                <div className='card-body'>
+                                                    <h4 className="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
+                                                    <br />
+                                
+                                                    <div className='list-group'>
+
+                                                   {/*  <p class="card-text text-capitalize ">Nota</p> */}
+                                                    <p className="card-text text-capitalize text-center">{selectedItem.nota}</p>
+                                                    <button className="btn btn-danger text-center" onClick={closeModal}>Cerrar</button>
+                                                    </div>
+                                                </div>
+                                            )}
+
+
+                                        </Modal>
                                     {/*   <td>
                                         <button
                                             type="button"
