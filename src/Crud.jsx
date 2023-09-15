@@ -19,10 +19,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Complete from './Complete';
 import Modal from 'react-modal';
-import ProgressBar from './ProgressBar';
-import Temporizador from './Temporizador';
-import Timer from './Timer';
-import Info from './Info';
+/* import ProgressBar from './ProgressBar'; */
+/* import Temporizador from './Temporizador'; */
+/* import Timer from './Timer';
+import Info from './Info'; */
 Modal.setAppElement('#root');
 
 const styleBoot = {
@@ -485,6 +485,7 @@ export default function Crud({ signingOut }) {
     };
 
 
+
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
@@ -644,7 +645,7 @@ const handleclickInfo =(item)=>{
                                     {/* <td>{item.nota}</td> */}
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>
                                         {item.estadoImpresion.value}
-                                        {item.estadoImpresion.value == 'Imprimimiendo' ? <ProgressBar bgcolor="green" progress='30' height={5} /> : ""}
+                                       {/*  {item.estadoImpresion.value == 'Imprimimiendo' ? <ProgressBar bgcolor="green" progress='30' height={5} /> : ""} */}
                                     </td>
                                     
                                     {/* <td>
@@ -800,7 +801,7 @@ const handleclickInfo =(item)=>{
                                     {/* <td>{item.nota}</td> */}
                                     <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>
                                         {item.estadoImpresion.value}
-                                        {item.estadoImpresion.value == 'Imprimiendo' ? <ProgressBar bgcolor="purple" progress='30' height={5} /> : ""}
+                                       {/*  {item.estadoImpresion.value == 'Imprimiendo' ? <ProgressBar bgcolor="purple" progress='30' height={5} /> : ""} */}
                                         {/* <Temporizador /> */}
                                     </td>
                                    
