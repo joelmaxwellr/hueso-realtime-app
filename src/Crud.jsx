@@ -19,6 +19,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Complete from './Complete';
 import Modal from 'react-modal';
+import ProgressBar from './ProgressBar';
+import Temporizador from './Temporizador';
+import Timer from './Timer';
+import Info from './Info';
 Modal.setAppElement('#root');
 
 const styleBoot = {
@@ -71,6 +75,7 @@ export default function Crud({ signingOut }) {
     const [colapsosVisibles, setColapsosVisibles] = useState({});
     const [grupoCambioEstado, setGrupoCambioEstado] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [temporizador, setTemporizador] = useState(null);
 
     // Función para ocultar el contenido colapsado
 
@@ -107,6 +112,7 @@ export default function Crud({ signingOut }) {
          setHora(horaFormateada); */
         if (nombreCliente || precio) {
             try {
+
                 await push(ref(db, "ordenes"), {
                     nombreCliente: nombreCliente,
                     material: material,
@@ -117,8 +123,12 @@ export default function Crud({ signingOut }) {
                     hora: horaFormateada,
                     estadoImpresion: estadoImpresion,
                     usuarioActual: usuarioActual,
-                    checkEnvio: checkEnvio
+                    checkEnvio: checkEnvio,
+                    
                 });
+
+
+
                 console.log("Document written with ID: ");
             } catch (e) {
                 console.error("Error adding document: ", e);
@@ -140,6 +150,41 @@ export default function Crud({ signingOut }) {
     }
 
 
+    const tiempoEstimado = (precio, material) => {
+        const tiempo = 0
+        if (material === "DTF" || material === "Sublimación" || material === "UV") {
+            const segunMaterial = {
+                "DTF": {
+                    "margenTiempo": 20,
+                    "precioMaterial": 500,
+                    "constanteTiempo": 5.5
+                },
+                "Sublimación": {
+                    "margenTiempo": 10,
+                    "precioMaterial": 240,
+                    "constanteTiempo": 6.5
+                },
+                "UV": {
+                    "margenTiempo": 14.75,
+                    "precioMaterial": 20,
+                    "constanteTiempo": 0.42
+                },
+            }
+            const tiempo = (precio / segunMaterial[material].precioMaterial * segunMaterial[material].constanteTiempo) + segunMaterial[material].margenTiempo
+
+            return tiempo
+        } else {
+
+            return tiempo
+        }
+
+
+    }
+    /* tiempoEstimado(10000, "DTF") */
+    /*   
+       tiempoEstimado(1500, "UV")
+       tiempoEstimado(1500, "Sublimación")
+    */
 
     const fetchData = async () => {
         const dbRef = ref(db, 'ordenes');
@@ -176,7 +221,7 @@ export default function Crud({ signingOut }) {
 
             setFilteredData(resultado);
         }
-       
+
         else {
             const resultado = data.filter((Element) => Element.material == busqueda || Element.estadoImpresion.value == busqueda);
             setFilteredData(resultado);
@@ -204,6 +249,16 @@ export default function Crud({ signingOut }) {
         setData(resultadosBusqueda);
     }
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            /* setTime(new Date()); */
+            setTemporizador(new Date().toLocaleTimeString())
+        }, 1000);
+        /*  return () => {
+           clearInterval(interval);
+         }; */
+
+    }, [])
 
 
     useEffect(() => {
@@ -268,20 +323,10 @@ export default function Crud({ signingOut }) {
         const fechaFormateada = fechaActual.toLocaleDateString();
         const horaFormateada = fechaActual.toLocaleTimeString();
 
-        const nuevoCambioEstado = {
-            estado: clienteActualizando.estadoImpresion.value,
-            usuarioCambioEstado: usuarioActual,
-            fechaOrdenCambioEstado: fechaOrdens,
-            fecha: fechaFormateada,
-            hora: horaFormateada
-        };
-
-        // Copiar los cambios de estado acumulados en una variable temporal
-        const cambiosEstadoTemp = [...cambiosEstado, nuevoCambioEstado];
-
+    
         try {
             const dbRef = ref(db, `ordenes/${clienteActualizando.id}`);
-
+            guardarInfoActualizaciones()
             await update(dbRef, {
                 nombreCliente: nombreCliente,
                 material: material,
@@ -293,21 +338,58 @@ export default function Crud({ signingOut }) {
                 estadoImpresion: estadoImpresion,
                 checkEnvio: checkEnvio
                 /* datosCambiosEstado: cambiosEstadoTemp,  */// Usar los cambios acumulados en la actualización
-            });
+            }
+            );
+            
             console.log("Document successfully updated!");
         } catch (e) {
             console.error("Error updating document: ", e);
         }
 
         // Actualizar el estado con los cambios acumulados
-        setCambiosEstado(cambiosEstadoTemp);
-
+        
+        
         setActualizando(false);
         limpiarCampos();
         fetchData();
         setMostrarBoton(false);
     };
 
+
+    const guardarInfoActualizaciones = async () => {
+        const fechaActual = new Date();
+        const fechaOrdens = fechaActual.getTime();
+        const fechaFormateada = fechaActual.toLocaleDateString();
+        const horaFormateada = fechaActual.toLocaleTimeString();
+
+       /*  const nuevoCambioEstado = {
+            estado: clienteActualizando.estadoImpresion.value,
+            usuarioCambioEstado: usuarioActual,
+            fechaOrdenCambioEstado: fechaOrdens,
+            fecha: fechaFormateada,
+            hora: horaFormateada
+        };
+
+        // Copiar los cambios de estado acumulados en una variable temporal
+        const cambiosEstadoTemp = [...cambiosEstado, nuevoCambioEstado]; */
+
+        try {
+            const dbRef = ref(db, `ordenes/${clienteActualizando.id}/info`);
+
+            await push(dbRef, {
+                estado: clienteActualizando.estadoImpresion.value,
+                usuarioCambioEstado: usuarioActual,
+                fechaOrdenCambioEstado: fechaOrdens,
+                fecha: fechaFormateada,
+                hora: horaFormateada
+            });
+            console.log("Document successfully updated!");
+        } catch (e) {
+            console.error("Error updating document: ", e);
+        }
+
+        
+    };
 
 
 
@@ -379,19 +461,26 @@ export default function Crud({ signingOut }) {
         sumaData(data)
     }
 
+    const capitalizeWords = (sentence) => {
+        const words = sentence.split(' ');
+        const capitalizedWords = words.map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        });
+        return capitalizedWords.join(' ');
+    };
 
 
     const handleCopyClick = (item) => {
-        const textToCopy = `${item.nombreCliente} - RD$${item.precio} - ${item.material}`;
+        const textToCopy = `${capitalizeWords(item.nombreCliente)} - RD$ ${separator(item.precio)} - ${item.material} - ${item.nota}`;
 
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 console.log('Texto copiado: ', textToCopy);
-               /*  toast.success(`Texto copiado correctamente ${item.nombreCliente} `); */
+                /*  toast.success(`Texto copiado correctamente ${item.nombreCliente} `); */
             })
             .catch((error) => {
                 console.error('Error al copiar: ', error);
-               /*  toast.error('Error al copiar el texto'); */
+                /*  toast.error('Error al copiar el texto'); */
             });
     };
 
@@ -412,6 +501,15 @@ export default function Crud({ signingOut }) {
         setSelectedItem(null);
         setModalIsOpen(false);
     };
+
+const[clickInfo, setClickInfo] = useState(false)
+const[dataInfo, setDataInfo] = useState(null)
+
+const handleclickInfo =(item)=>{
+    setClickInfo(!clickInfo)
+    setDataInfo(item)
+}
+
     return (
         <div>
             <ToastContainer />
@@ -431,7 +529,7 @@ export default function Crud({ signingOut }) {
                     <div className="invalid-feedback">
                         Campos vacios!
                     </div>
-
+                   {/*  <Timer /> */}
 
 
                     <input className='form-control' type="number" id='precio' placeholder='Precio' value={precio} onChange={(e) => setPrecio(e.target.value)} onKeyDown={handleKeyDown} />
@@ -440,6 +538,7 @@ export default function Crud({ signingOut }) {
                         <option value="UV">UV</option>
                         <option value="Sublimación">Sublimación</option>
                         <option value="Impresión Directa">Impresion Directa</option>
+                        <option value="Tshirts">Tshirts</option>
                         <option value="Otros">Otros</option>
                     </select>
                     <select name="estadoImpresion"
@@ -481,7 +580,7 @@ export default function Crud({ signingOut }) {
                     </span>
                 </div>
                 <div >
-                    {material&& <textarea className='form-control m-3' type="search" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
+                    {material && <textarea className='form-control m-3' type="search" id='nota' placeholder='Nota' value={nota} onChange={(e) => setnota(e.target.value)} />
                        /*  : " " */}
 
                     {!actualizando ? <div className="row justify-content-center"><button className='btn btn-primary ' onClick={crear}>Crear <MdCreateNewFolder size={25} /></button>  </div>
@@ -543,7 +642,15 @@ export default function Crud({ signingOut }) {
                                     </td>
 
                                     {/* <td>{item.nota}</td> */}
-                                    <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
+                                    <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>
+                                        {item.estadoImpresion.value}
+                                        {item.estadoImpresion.value == 'Imprimimiendo' ? <ProgressBar bgcolor="green" progress='30' height={5} /> : ""}
+                                    </td>
+                                    
+                                    {/* <td>
+                                        <ProgressBar bgcolor="green" progress='30'  height={5} />
+                                        </td> */}
+
                                     <td className={colorTabla ? colorTabla : undefined} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
@@ -554,8 +661,8 @@ export default function Crud({ signingOut }) {
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
                                             : ''}
-                                            {item.nota &&
-                                            <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20}/></button>}
+                                        {item.nota &&
+                                            <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20} /></button>}
                                     </td>
                                     {/*   <td>
                                         <button data-toggle="tooltip" href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
@@ -577,34 +684,34 @@ export default function Crud({ signingOut }) {
 
                                         </div>
                                     </td> */}
-                                   
-                                        
-                                        <Modal
-                                            isOpen={modalIsOpen}
-                                            onRequestClose={closeModal}
-                                            contentLabel="Ejemplo Modal"
-                                            style={customStyles}
-                                            animationType='slide'
-                                            transparent
-                                        >
 
-                                            {selectedItem && (
-                                                <div className='card-body'>
-                                                    <h4 className="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
-                                                    <br />
-                                
-                                                    <div className='list-group'>
 
-                                                   {/*  <p class="card-text text-capitalize ">Nota</p> */}
+                                    <Modal
+                                        isOpen={modalIsOpen}
+                                        onRequestClose={closeModal}
+                                        contentLabel="Ejemplo Modal"
+                                        style={customStyles}
+                                        animationType='slide'
+                                        transparent
+                                    >
+
+                                        {selectedItem && (
+                                            <div className='card-body'>
+                                                <h4 className="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
+                                                <br />
+
+                                                <div className='list-group'>
+
+                                                    {/*  <p class="card-text text-capitalize ">Nota</p> */}
                                                     <p className="card-text text-capitalize text-center">{selectedItem.nota}</p>
                                                     <button className="btn btn-danger text-center" onClick={closeModal}>Cerrar</button>
-                                                    </div>
                                                 </div>
-                                            )}
+                                            </div>
+                                        )}
 
 
-                                        </Modal>
-                                    
+                                    </Modal>
+
                                     {/*    <td>
                                         <button data-toggle="tooltip" href="#collapseExample" data-placement="top" title={item.datosCambiosEstado}
                                             className="btn btn-info"
@@ -691,7 +798,12 @@ export default function Crud({ signingOut }) {
                                         <button className="btn btn-secondary " onClick={() => handleCopyClick(item)}><FaRegCopy size={14} /></button>
                                         <ToastContainer /></td>
                                     {/* <td>{item.nota}</td> */}
-                                    <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>{item.estadoImpresion.value}</td>
+                                    <td className={item.estadoImpresion.className ? item.estadoImpresion.className : undefined}>
+                                        {item.estadoImpresion.value}
+                                        {item.estadoImpresion.value == 'Imprimiendo' ? <ProgressBar bgcolor="purple" progress='30' height={5} /> : ""}
+                                        {/* <Temporizador /> */}
+                                    </td>
+                                   
                                     <td className={colorTabla ? colorTabla : undefined} >{item.fecha}</td>
                                     <td>{item.hora}</td>
                                     <td>{item.usuarioActual ? acortarUsuario(item.usuarioActual) : '-'}</td>
@@ -701,35 +813,35 @@ export default function Crud({ signingOut }) {
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
                                             : ''}
-                                            {item.nota &&
-                                            <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20}/></button>}
+                                        {item.nota &&
+                                            <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20} /></button>}
                                     </td>
 
-                                      
-                                        <Modal
-                                            isOpen={modalIsOpen}
-                                            onRequestClose={closeModal}
-                                            contentLabel="Ejemplo Modal"
-                                            style={customStyles}
-                                            animationType='slide'
-                                            transparent
-                                        >
 
-                                            {selectedItem && (
-                                                <div className='card-body'>
-                                                    <h4 className="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
-                                                    <br />
-                                
-                                                    <div className='list-group'>
+                                    <Modal
+                                        isOpen={modalIsOpen}
+                                        onRequestClose={closeModal}
+                                        contentLabel="Ejemplo Modal"
+                                        style={customStyles}
+                                        animationType='slide'
+                                        transparent
+                                    >
 
-                                                   {/*  <p class="card-text text-capitalize ">Nota</p> */}
+                                        {selectedItem && (
+                                            <div className='card-body'>
+                                                <h4 className="card-title m-2 text-center text-capitalize">{selectedItem.nombreCliente}</h4>
+                                                <br />
+
+                                                <div className='list-group'>
+
+                                                    {/*  <p class="card-text text-capitalize ">Nota</p> */}
                                                     <p className="card-text text-capitalize text-center">{selectedItem.nota}</p>
                                                     <button className="btn btn-danger text-center" onClick={closeModal}>Cerrar</button>
-                                                    </div>
                                                 </div>
-                                            )}
+                                            </div>
+                                        )}
 
-                                        </Modal>
+                                    </Modal>
                                     {/*   <td>
                                         <button
                                             type="button"
@@ -753,11 +865,18 @@ export default function Crud({ signingOut }) {
                                             )) : '-'}
                                         </div>
                                     </td> */}
-                                   
+
+
+
 
                                     <td> <PrintButton objeto={item} mostrarBoton={mostrarBoton} separator={separator} /> </td>
+                                     {usuarioActual == "ma2@gmail.com" ?<td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td>: ""}
                                     {/*   <td><button className='btn btn-danger' onClick={() => borrar(item.id)} disabled={mostrarBoton}>Borrar</button></td> */}
                                     <td><button className='btn btn-primary' onClick={(e) => actualizar(item, e)} >Actualizar <GrDocumentUpdate size={17} /></button></td>
+                                    {/* <td><button className='btn btn-danger' onClick={(e) => handleclickInfo(item)} > <a href={`/info/:dataInfo`}>info </a> <GrDocumentUpdate size={17} /></button></td> */}
+                                  {/*  {clickInfo ? <Info data={dataInfo}/> : " "
+
+                                   } */}
 
                                     {/* <td>
                                         <button
