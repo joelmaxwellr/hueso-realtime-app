@@ -15,6 +15,7 @@ import { HiOutlineAnnotation } from "react-icons/hi";
 import CampoClienteAutocomplete from './CampoClienteAutocomplete'
 import DataOrdenesContext from './DataOrdenesContext';
 
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Complete from './Complete';
@@ -595,7 +596,7 @@ const handleclickInfo =(item)=>{
 
 
                 <h5 className='container'>Ordenes En Espera</h5>
-                <table className="table mx-auto m-5" >
+                <table className="table mx-auto m-5 table-hover " >
                     <thead>
                         <tr>
 
@@ -752,7 +753,7 @@ const handleclickInfo =(item)=>{
 
                 </table>
                 <h5 className='container'>Ordenes {activeTab}</h5>
-                <table className="table mx-auto m-5">
+                <table className="table mx-auto m-5 table-hover">
                     <thead>
                         <tr>
 
