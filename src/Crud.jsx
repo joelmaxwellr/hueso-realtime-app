@@ -196,9 +196,9 @@ export default function Crud({ signingOut }) {
 
                 // Ordenar el array por la propiedad "valor" de forma ascendente
                 newArray.sort((a, b) => b.fechaOrden - a.fechaOrden);
-
-                setData(newArray);
-                setFilteredData(newArray); // Actualizar la data filtrada al obtener nuevos datos
+                const firstFiveItems = newArray.slice(0, 400);
+                setData(firstFiveItems);
+                setFilteredData(firstFiveItems); // Actualizar la data filtrada al obtener nuevos datos
             } else {
                 setData([]);
                 setFilteredData([]);
