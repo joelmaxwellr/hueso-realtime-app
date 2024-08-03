@@ -15,6 +15,8 @@ import { HiOutlineAnnotation } from "react-icons/hi";
 import CampoClienteAutocomplete from './CampoClienteAutocomplete'
 import DataOrdenesContext from './DataOrdenesContext';
 
+import { TbHexagonLetterM } from "react-icons/tb";
+
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -54,6 +56,7 @@ export default function Crud({ signingOut }) {
     const [material, setMaterial] = useState("DTF")
     const [nota, setnota] = useState("")
     const [checkEnvio, setCheckEnvio] = useState(false)
+    const [checkSucursal, setCheckSucursal] = useState(false)
     const [sucursal, setSucursal] = useState()
     const [checkSeleccion, setCheckSeleccion] = useState(true)
     const [precio, setPrecio] = useState(0)
@@ -99,6 +102,7 @@ export default function Crud({ signingOut }) {
         setMaterial("DTF")
         setEstadoImpresion({ value: "Espera", className: style["Espera"] })
         setCheckEnvio(false)
+        setCheckSucursal(false)
     }
 
 
@@ -126,6 +130,7 @@ export default function Crud({ signingOut }) {
                     estadoImpresion: estadoImpresion,
                     usuarioActual: usuarioActual,
                     checkEnvio: checkEnvio,
+                    checkSucursal: checkSucursal,
                     //sucursal: sucursal
 
                     
@@ -184,7 +189,7 @@ export default function Crud({ signingOut }) {
 
 
 
-        
+
     }
     /* tiempoEstimado(10000, "DTF") */
     /*   
@@ -227,7 +232,13 @@ export default function Crud({ signingOut }) {
 
             setFilteredData(resultado);
         }
+        
+        else if (busqueda === "AprobadoLM") {
+            const resultado = data.filter((Element) => Element.checkSucursal === true || Element.estadoImpresion.value == busqueda);
 
+            setFilteredData(resultado);
+        }
+        
         else {
             const resultado = data.filter((Element) => Element.material == busqueda || Element.estadoImpresion.value == busqueda);
             setFilteredData(resultado);
@@ -313,6 +324,7 @@ export default function Crud({ signingOut }) {
         setPrecio(item.precio);
         setnota(item.nota);
         setCheckEnvio(item.checkEnvio)
+        setCheckSucursal(item.checkSucursal)
         setEstadoImpresion({ value: item.estadoImpresion.value, className: item.estadoImpresion.className })
         setActualizando(true);
         setClienteActualizando(item);
@@ -342,7 +354,8 @@ export default function Crud({ signingOut }) {
                 fechaOrden: fechaOrdens,
                 hora: clienteActualizando.hora,
                 estadoImpresion: estadoImpresion,
-                checkEnvio: checkEnvio
+                checkEnvio: checkEnvio,
+                checkSucursal: checkSucursal
                 /* datosCambiosEstado: cambiosEstadoTemp,  */// Usar los cambios acumulados en la actualización
             }
             );
@@ -578,6 +591,16 @@ const handleclickInfo =(item)=>{
                             <input className='' type="checkbox" id='checkEnvio' checked={checkEnvio} onChange={(e) => setCheckEnvio(e.target.checked)} />
                         </div>
                     </div>
+                    
+                    <div className='p-2'>
+                        Los Mina
+                    </div>
+                    <div className="input-group-text ">
+                        <div className='input-group-prepend'>
+
+                            <input className='' type="checkbox" id='checkSucursal' checked={checkSucursal} onChange={(e) => setCheckSucursal(e.target.checked)} />
+                        </div>
+                    </div>
                     <input className='form-control' type="text" id='buscador' placeholder="Buscar cliente" value={busqueda}
                         onChange={(e) => {
                             setBusqueda(e.target.value)
@@ -633,7 +656,15 @@ const handleclickInfo =(item)=>{
                                 <tr key={item.id} className={colorTabla ? colorTabla : undefined}>
 
                                     {/*   <th scope="row">{item.orden}</th> */}
-                                    <th scope="row"> <div className='input-group-prepend'>
+                                    <th scope="row"> 
+
+                                    {item.checkSucursal === true ?
+                                            < TbHexagonLetterM 
+                                                style={{ padding: '6px', borderRadius: '8px' }}
+                                                className={style.AprobadoLM ? style.AprobadoLM : undefined} size={40} />
+                                            : ''}
+                                            
+                                            <div className='input-group-prepend'>
 
                                         {/*  <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
                                         {/*   {checkSeleccion===true ? console.log :a} */}
@@ -669,6 +700,11 @@ const handleclickInfo =(item)=>{
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
                                             : ''}
+                                        {/* {item.checkSucursal === true ?
+                                            < TbHexagonLetterM 
+                                                style={{ padding: '6px', borderRadius: '8px' }}
+                                                className={style.AprobadoLM ? style.AprobadoLM : undefined} size={40} />
+                                            : ''} */}
                                         {item.nota &&
                                             <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20} /></button>}
                                     </td>
@@ -790,7 +826,14 @@ const handleclickInfo =(item)=>{
                                 <tr key={item.id} className={colorTabla ? colorTabla : undefined}>
 
                                     {/* <th scope="row">{item.orden}</th> */}
-                                    <th scope="row"> <div className='input-group-prepend'>
+                                    <th scope="row"> {
+                                    
+                                    item.checkSucursal === true ?
+                                            < TbHexagonLetterM 
+                                                style={{ padding: '6px', borderRadius: '8px' }}
+                                                className={style.AprobadoLM ? style.AprobadoLM : undefined} size={40} />
+                                            : ''}
+                                            <div className='input-group-prepend'>
 
                                         {/*   <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
                                     </div>
@@ -821,6 +864,11 @@ const handleclickInfo =(item)=>{
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.ParaEnvío ? style.ParaEnvío : undefined} size={40} />
                                             : ''}
+                                       {/* {item.checkSucursal === true ?
+                                            <TbHexagonLetterM 
+                                                style={{ padding: '6px', borderRadius: '8px' }}
+                                                className={style.AprobadoLM ? style.AprobadoLM : undefined} size={40} />
+                                            : ''} */}
                                         {item.nota &&
                                             <button className="btn btn-info" onClick={() => openModal(item)}><HiOutlineAnnotation size={20} /></button>}
                                     </td>
