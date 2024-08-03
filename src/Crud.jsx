@@ -588,7 +588,7 @@ const handleclickInfo =(item)=>{
                     <div className="input-group-text ">
                         <div className='input-group-prepend'>
 
-                            <input className='' type="checkbox" id='checkEnvio' checked={checkEnvio} onChange={(e) => setCheckEnvio(e.target.checked)} />
+                            <input className='' type="checkbox" id='checkEnvio' checked={checkEnvio } onChange={(e) => setCheckEnvio(e.target.checked)} />
                         </div>
                     </div>
                     
@@ -598,7 +598,7 @@ const handleclickInfo =(item)=>{
                     <div className="input-group-text ">
                         <div className='input-group-prepend'>
 
-                            <input className='' type="checkbox" id='checkSucursal' checked={checkSucursal} onChange={(e) => setCheckSucursal(e.target.checked)} />
+                            <input className='' type="checkbox" id='checkSucursal' checked={estadoImpresion.value== "AprobadoLM" ? true:checkSucursal} onChange={(e) => setCheckSucursal(e.target.checked)} />
                         </div>
                     </div>
                     <input className='form-control' type="text" id='buscador' placeholder="Buscar cliente" value={busqueda}
