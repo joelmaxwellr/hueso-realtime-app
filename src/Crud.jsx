@@ -54,6 +54,7 @@ export default function Crud({ signingOut }) {
     const [material, setMaterial] = useState("DTF")
     const [nota, setnota] = useState("")
     const [checkEnvio, setCheckEnvio] = useState(false)
+    const [sucursal, setSucursal] = useState()
     const [checkSeleccion, setCheckSeleccion] = useState(true)
     const [precio, setPrecio] = useState(0)
     const [data, setData] = useState([])
@@ -125,6 +126,8 @@ export default function Crud({ signingOut }) {
                     estadoImpresion: estadoImpresion,
                     usuarioActual: usuarioActual,
                     checkEnvio: checkEnvio,
+                    //sucursal: sucursal
+
                     
                 });
 
@@ -550,6 +553,7 @@ const handleclickInfo =(item)=>{
                         onChange={(e) => setEstadoImpresion({ value: e.target.value, className: style[`${e.target.value}`] ? style[`${e.target.value}`] : undefined })}>
                         <option value="Espera" className={style.Espera ? style.Espera : undefined}>Espera</option>
                         <option value="Aprobado" className={style.Aprobado ? style.Aprobado : undefined}>Aprobado</option>
+                        <option value="AprobadoLM" className={style.AprobadoLM ? style.AprobadoLM : undefined}>Aprobado LOS MINA</option>
                         <option value="Cancelado" className={style.Cancelado ? style.Cancelado : undefined}>Cancelado</option>
                         <option value="Detenido" className={style.Detenido ? style.Detenido : undefined}>Detenido</option>
                         <option value="Imprimiendo" className={style.Imprimiendo ? style.Imprimiendo : undefined}>Imprimiendo</option>
