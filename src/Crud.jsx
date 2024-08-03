@@ -598,7 +598,7 @@ const handleclickInfo =(item)=>{
                     <div className="input-group-text ">
                         <div className='input-group-prepend'>
 
-                            <input className='' type="checkbox" id='checkSucursal' checked={estadoImpresion.value== "AprobadoLM" ? true:checkSucursal} onChange={(e) => setCheckSucursal(e.target.checked)} />
+                            <input className='' type="checkbox" id='checkSucursal' checked={checkSucursal} onChange={(e) => setCheckSucursal(e.target.checked)} />
                         </div>
                     </div>
                     <input className='form-control' type="text" id='buscador' placeholder="Buscar cliente" value={busqueda}
@@ -658,12 +658,12 @@ const handleclickInfo =(item)=>{
                                     {/*   <th scope="row">{item.orden}</th> */}
                                     <th scope="row"> 
 
-                                    {item.checkSucursal === true ?
+                                    {item.checkSucursal === true  ?
                                             < TbHexagonLetterM 
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.AprobadoLM ? style.AprobadoLM : undefined} size={40} />
                                             : ''}
-                                            
+                                            {console.log(item.estadoImpresion.value)}
                                             <div className='input-group-prepend'>
 
                                         {/*  <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
