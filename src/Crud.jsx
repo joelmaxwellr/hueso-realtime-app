@@ -569,6 +569,7 @@ const handleclickInfo =(item)=>{
                         <option value="Onevision">Onevision</option>
                         <option value="Otros">Otros</option>
                     </select>
+                    
                     <select name="estadoImpresion"
                         className={estadoImpresion.className ? estadoImpresion.className : undefined}
                         id="estadoImpresion"
