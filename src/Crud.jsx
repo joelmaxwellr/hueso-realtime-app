@@ -559,6 +559,14 @@ const handleclickInfo =(item)=>{
                         <option value="Sublimación">Sublimación</option>
                         <option value="Impresión Directa">Impresion Directa</option>
                         <option value="Tshirts">Tshirts</option>
+                        <option value="Lapiceros">Lapiceros</option>
+                        <option value="Impresion y Calandra">Impresion y Calandra</option>
+                        <option value="Calandra">Calandra</option>
+                        <option value="Corte Laser">Corte Laser</option>
+                        <option value="Banner">Banner</option>
+                        <option value="Vinil">Vinil</option>
+                        <option value="Vinil troquelado">Vinil troquelado</option>
+                        <option value="Onevision">Onevision</option>
                         <option value="Otros">Otros</option>
                     </select>
                     <select name="estadoImpresion"
