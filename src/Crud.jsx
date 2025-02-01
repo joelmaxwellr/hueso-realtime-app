@@ -474,11 +474,11 @@ export default function Crud({ signingOut }) {
 
 
         })
-        console.log(`DTF = ${sumaDTF}, UV = ${sumaUV}, subli = ${sumaSubli}, Directa = ${sumaDirect}  Total = ${sumaTotal}`)
+        /* console.log(`DTF = ${sumaDTF}, UV = ${sumaUV}, subli = ${sumaSubli}, Directa = ${sumaDirect}  Total = ${sumaTotal}`) */
     }
-    if (usuarioActual == "joelmaxwellr@gmail.com") {
+    /*if (usuarioActual == "joelmaxwellr@gmail.com") {
         sumaData(data)
-    }
+    }*/
 
     const capitalizeWords = (sentence) => {
         const words = sentence.split(' ');
@@ -557,12 +557,13 @@ const handleclickInfo =(item)=>{
                         <option value="DTF">DTF</option>
                         <option value="UV">UV</option>
                         <option value="Sublimación">Sublimación</option>
-                        <option value="Impresión Directa">Impresion Directa</option>
+                        <option value="Impresión Directa">Impresión Directa</option>
                         <option value="Tshirts">Tshirts</option>
                         <option value="Lapiceros">Lapiceros</option>
-                        <option value="Impresion y Calandra">Impresion y Calandra</option>
+                        <option value="Impresión y Calandra">Impresión y Calandra</option>
                         <option value="Calandra">Calandra</option>
                         <option value="Corte Laser">Corte Laser</option>
+                        <option value="Corte - Imp Directa">Corte - Imp Directa</option>
                         <option value="Banner">Banner</option>
                         <option value="Vinil">Vinil</option>
                         <option value="Vinil troquelado">Vinil troquelado</option>
@@ -672,7 +673,7 @@ const handleclickInfo =(item)=>{
                                                 style={{ padding: '6px', borderRadius: '8px' }}
                                                 className={style.AprobadoLM ? style.AprobadoLM : undefined} size={40} />
                                             : ''}
-                                            {console.log(item.estadoImpresion.value)}
+                                            {/* {console.log(item.estadoImpresion.value)} */}
                                             <div className='input-group-prepend'>
 
                                         {/*  <input className='' type="checkbox" id='checkSeleccion' checked={checkSeleccion} onChange={(e) => setCheckSeleccion(e.target.checked)} /> */}
