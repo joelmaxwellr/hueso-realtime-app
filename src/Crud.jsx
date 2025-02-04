@@ -560,13 +560,18 @@ const handleclickInfo =(item)=>{
                         <option value="Impresión Directa">Impresión Directa</option>
                         <option value="Tshirts">Tshirts</option>
                         <option value="Lapiceros">Lapiceros</option>
-                        <option value="Impresión y Calandra">Impresión y Calandra</option>
+                        <option value="Carnets">Carnets</option>
+                        <option value="Agendas">Agendas</option>
+                        <option value="Termos">Termos</option>
+                        <option value="Dominós">Dominós</option>
+                        <option value="Tela - Imppresión - Calandra">Tela - Imppresion - Calandra</option>
+                        <option value="Impresión - Calandra">Impresión - Calandra</option>
                         <option value="Calandra">Calandra</option>
                         <option value="Corte Laser">Corte Laser</option>
                         <option value="Corte - Imp Directa">Corte - Imp Directa</option>
                         <option value="Banner">Banner</option>
                         <option value="Vinil">Vinil</option>
-                        <option value="Vinil troquelado">Vinil troquelado</option>
+                        <option value="Vinil Troquelado">Vinil Troquelado</option>
                         <option value="Onevision">Onevision</option>
                         <option value="Otros">Otros</option>
                     </select>
@@ -683,7 +688,7 @@ const handleclickInfo =(item)=>{
                                     <td className='text-capitalize'>{item.nombreCliente}</td>
                                     <td className="text-right"><label>RD$</label> {separator(item.precio)}</td>
                                     <td >{item.material}</td>
-
+Ï
                                     <td >
 
                                         <button className="btn btn-secondary " onClick={() => handleCopyClick(item)}><FaRegCopy size={14} /></button>
